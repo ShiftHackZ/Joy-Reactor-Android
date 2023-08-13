@@ -1,0 +1,84 @@
+ext {
+    composeBomVersion = '2023.06.01'
+    composeMaterialVersion = '1.1.1'
+    composeUiToolingVersion = '1.4.3'
+    composeNavVersion = '2.6.0'
+    lifecycleViewModelVersion = '2.6.1'
+    lifecycleComposeVersion = '2.6.1'
+    coreKtxVersion = '1.10.1'
+    appCompatVersion = '1.6.1'
+    activityVersion = '1.7.2'
+    koinVersion = '3.4.3'
+    koinComposeVersion = '3.4.6'
+    coilComposeVersion = '2.4.0'
+//    retrofitVersion = '2.9.0'
+//    okHttpVersion = '5.0.0-alpha.11'
+    roomVersion = '2.5.2'
+    jsoupVersion = '1.16.1'
+    coroutinesVersion = '1.7.3'
+    pagingVersion = '3.1.1'
+    pagingComposeVersion = '1.0.0-alpha18'
+    timberVersion = '5.0.1'
+    gsonVersion = '2.10.1'
+    googleMaterialVersion = '1.9.0'
+    accompanistSystemUiControllerVersion = '0.30.1'
+
+    testJunitVersion = '4.13.2'
+
+    androidx = [
+            core                        : "androidx.core:core-ktx:$coreKtxVersion",
+            appcompat                   : "androidx.appcompat:appcompat:$appCompatVersion",
+            activity                    : "androidx.activity:activity-ktx:$activityVersion",
+            composeBom                  : "androidx.compose:compose-bom:$composeBomVersion",
+            composeRuntime              : "androidx.compose.runtime:runtime",
+            composeMaterial3            : "androidx.compose.material3:material3:$composeMaterialVersion",
+            composeMaterialIconsExtended: "androidx.compose.material:material-icons-extended",
+            composeUiGraphics           : "androidx.compose.ui:ui-graphics",
+            composeUiTooling            : "androidx.compose.ui:ui-tooling:$composeUiToolingVersion",
+            composeUiToolingPreview     : "androidx.compose.ui:ui-tooling-preview:$composeUiToolingVersion",
+            composeActivity             : "androidx.activity:activity-compose:$activityVersion",
+            composeViewModel            : "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleViewModelVersion",
+            composeNavigation           : "androidx.navigation:navigation-compose:$composeNavVersion",
+            lifecycleViewModel          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewModelVersion",
+            lifecycleCompose            : "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleComposeVersion",
+            pagingRuntime               : "androidx.paging:paging-runtime:$pagingVersion",
+            pagingCompose               : "androidx.paging:paging-compose:$pagingComposeVersion",
+    ]
+    google = [
+            gson                         : "com.google.code.gson:gson:$gsonVersion",
+            material                     : "com.google.android.material:material:$googleMaterialVersion",
+            accompanistSystemUiController: "com.google.accompanist:accompanist-systemuicontroller:$accompanistSystemUiControllerVersion",
+    ]
+    di = [
+            koinCore   : "io.insert-koin:koin-core:$koinVersion",
+            koinAndroid: "io.insert-koin:koin-android:$koinVersion",
+            koinCompose: "io.insert-koin:koin-androidx-compose:$koinComposeVersion",
+    ]
+    ui = [
+            coilCompose: "io.coil-kt:coil-compose:$coilComposeVersion",
+    ]
+//    retrofit = [
+//            core         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+//            converterGson: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+//            adapterRx    : "com.squareup.retrofit2:adapter-rxjava3:$retrofitVersion",
+//    ]
+//    okhttp = [
+//            core   : "com.squareup.okhttp3:okhttp:$okHttpVersion",
+//            logging: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
+//    ]
+    database = [
+            roomRuntime : "androidx.room:room-runtime:$roomVersion",
+            roomCompiler: "androidx.room:room-compiler:$roomVersion",
+            roomRx3     : "androidx.room:room-rxjava3:$roomVersion",
+    ]
+    org = [
+            jsoup: "org.jsoup:jsoup:$jsoupVersion",
+            coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+    ]
+    log = [
+            timber: "com.jakewharton.timber:timber:$timberVersion",
+    ]
+    test = [
+            junit: "junit:junit:$testJunitVersion",
+    ]
+}

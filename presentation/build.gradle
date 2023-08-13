@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+apply from: "$project.rootDir/gradle/common.gradle"
+
+android {
+    namespace 'com.shifthackz.joyreactor.presentation'
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.7"
+    }
+}
+
+dependencies {
+    implementation project(":domain")
+    implementation platform(androidx.composeBom)
+    
+
+    implementation di.koinCore
+    implementation di.koinAndroid
+    implementation di.koinCompose
+
+    
+    implementation androidx.core
+    implementation androidx.appcompat
+    implementation androidx.activity
+
+    implementation androidx.composeRuntime
+    implementation androidx.composeMaterial3
+    implementation androidx.composeMaterialIconsExtended
+    debugImplementation androidx.composeUiTooling
+    implementation androidx.composeUiToolingPreview
+    implementation androidx.composeActivity
+    implementation androidx.composeViewModel
+    implementation androidx.composeNavigation
+    implementation androidx.pagingRuntime
+    implementation androidx.pagingCompose
+
+    implementation androidx.composeUiGraphics
+    implementation androidx.lifecycleViewModel
+    implementation androidx.lifecycleCompose
+    implementation google.accompanistSystemUiController
+
+    implementation google.material
+    implementation ui.coilCompose
+}
