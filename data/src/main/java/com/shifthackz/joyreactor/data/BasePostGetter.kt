@@ -1,8 +1,11 @@
 package com.shifthackz.joyreactor.data
 
+import android.util.Log
+import com.shifthackz.joyreactor.domain.entity.Author
 import com.shifthackz.joyreactor.domain.entity.Content
 import com.shifthackz.joyreactor.domain.entity.PagePayload
 import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.domain.entity.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -17,25 +20,48 @@ class BasePostGetter {
         for (i in 0 until postContainers.size) {
             val postContainer = postContainers[i];
             val contentContainer = postContainer.select(".post_content")[0].select("div")
+            val tagsContainer = postContainer.select(".taglist").select("a")
+
             val contents = mutableListOf<Content>()
+            val tags = mutableListOf<Tag>()
+            val author = Author(
+                name = postContainer.select(".offline_username").text(),
+                avatarUrl = postContainer
+                    .select("img.avatar")
+                    .attr("src")
+                    .let(::formatImageUrl),
+            )
+
+            val rating = postContainer.select(".post_rating").text().toDoubleOrNull() ?: 0.0
+
+            for (j in 0 until tagsContainer.size) {
+                val tagItem = tagsContainer[j]
+                val tag = Tag(tagItem.attr("title"), tagItem.attr("href"))
+                tags.add(tag)
+            }
             for (j in 0 until contentContainer.size) {
-                val cntItem = contentContainer[j]
+                val contentItem = contentContainer[j]
                 when {
-                    cntItem.hasClass("image") -> {
-                        val imageContainer = cntItem.select(".image")
+                    contentItem.hasClass("image") -> {
+                        val imageContainer = contentItem.select(".image")
                         val imageUrl = imageContainer.select("a").attr("href")
                         if (imageUrl.isNotBlank()) {
                             contents.add(
-                                Content.Image(
-                                    if (imageUrl.startsWith("//")) "https:$imageUrl" else imageUrl
-                                )
+                                Content.Image(formatImageUrl(imageUrl))
                             )
                         }
                     }
                 }
             }
             if (contents.isNotEmpty()) {
-                posts.add(Post("", contents.toSet().toList()))
+                val post = Post(
+                    id = postContainer.attr("id").replace("postContainer", ""),
+                    author = author,
+                    contents = contents.toSet().toList(),
+                    tags = tags,
+                    rating = rating,
+                )
+                posts.add(post)
             }
         }
         val next = doc.select("a.next").attr("href")
@@ -45,5 +71,9 @@ class BasePostGetter {
             next = next.takeIf { it.isNotEmpty() }?.let { "https://joyreactor.cc$it" },
             prev = prev.takeIf { it.isNotEmpty() }?.let { "https://joyreactor.cc$it" },
         )
+    }
+
+    private fun formatImageUrl(input: String): String {
+        return if (input.startsWith("//")) "https:$input" else input
     }
 }

@@ -21,6 +21,7 @@ import com.shifthackz.joyreactor.domain.entity.Post
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
 import com.shifthackz.joyreactor.presentation.mvi.EmptyState
 import com.shifthackz.joyreactor.presentation.mvi.MviScreen
+import com.shifthackz.joyreactor.presentation.ui.widget.PostComposable
 import kotlinx.coroutines.flow.Flow
 
 class TestScreen(
@@ -50,26 +51,9 @@ private fun ScreenContent(
         ) {
             items(lazyPosts) { post ->
                 post?.let {
-                    Post(post = it)
+                    PostComposable(post = it)
                 }
             }
         }
     }
 }
-
-@Composable
-private fun Post(
-    modifier: Modifier = Modifier,
-    post: Post,
-) {
-    Column(modifier) {
-        post.contents.forEach {
-            when (it) {
-                is Content.Image -> {
-                    AsyncImage(model = it.url, contentDescription = null)
-                }
-            }
-        }
-    }
-}
-
