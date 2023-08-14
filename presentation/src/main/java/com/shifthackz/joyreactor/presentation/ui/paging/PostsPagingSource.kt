@@ -7,15 +7,17 @@ import com.shifthackz.joyreactor.domain.repository.PostsRepository
 
 class PostsPagingSource(
     private val postsRepository: PostsRepository,
+    private val firstKey: String = FIRST_KEY,
 ) : PagingSource<String, Post>() {
 
+//    override val keyReuseSupported: Boolean = true
+
     override fun getRefreshKey(state: PagingState<String, Post>): String? {
-        return FIRST_KEY
+        return firstKey
     }
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Post> {
-//        val pageSize = params.loadSize
-        val pageNext = params.key ?: FIRST_KEY
+        val pageNext = params.key ?: firstKey
         return postsRepository
             .stub(pageNext)
             .let {

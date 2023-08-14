@@ -40,16 +40,30 @@ class BasePostGetter {
                 tags.add(tag)
             }
             for (j in 0 until contentContainer.size) {
+                if (j == 0) continue
                 val contentItem = contentContainer[j]
-                when {
-                    contentItem.hasClass("image") -> {
-                        val imageContainer = contentItem.select(".image")
-                        val imageUrl = imageContainer.select("a").attr("href")
-                        if (imageUrl.isNotBlank()) {
-                            contents.add(
-                                Content.Image(formatImageUrl(imageUrl))
-                            )
-                        }
+//                Log.d("DBG0", "[$j] $contentItem")
+                if (contentItem.select("h3").size > 0) {
+                    val header3 = contentItem.select("h3").text()
+                    if (header3.isNotBlank()) contents.add(Content.Header(header3))
+                }
+                if (contentItem.select("p").size > 0) {
+                    for (k in 0 until contentItem.select("p").size) {
+                        val text = contentItem.select("p")[k].text()
+                        if (text.isNotBlank()) contents.add(Content.Text(text))
+                    }
+                }
+                if (contentItem.hasClass("image")) {
+                    val imageContainer = contentItem.select(".image")
+                    val imageUrlFromA = imageContainer.select("a").attr("href")
+                    val imageUrlFromImg = imageContainer.select("img").attr("src")
+                    when {
+                        imageUrlFromA.isNotBlank() -> contents.add(
+                            Content.Image(formatImageUrl(imageUrlFromA))
+                        )
+                        imageUrlFromImg.isNotBlank() -> contents.add(
+                            Content.Image(formatImageUrl(imageUrlFromImg))
+                        )
                     }
                 }
             }

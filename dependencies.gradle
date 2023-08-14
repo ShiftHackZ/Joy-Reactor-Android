@@ -18,6 +18,7 @@ ext {
     coroutinesVersion = '1.7.3'
     pagingVersion = '3.1.1'
     pagingComposeVersion = '1.0.0-alpha18'
+    paletteVersion = '1.0.0'
     timberVersion = '5.0.1'
     gsonVersion = '2.10.1'
     googleMaterialVersion = '1.9.0'
@@ -43,6 +44,7 @@ ext {
             lifecycleCompose            : "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleComposeVersion",
             pagingRuntime               : "androidx.paging:paging-runtime:$pagingVersion",
             pagingCompose               : "androidx.paging:paging-compose:$pagingComposeVersion",
+            palette                     : "androidx.palette:palette:$paletteVersion",
     ]
     google = [
             gson                         : "com.google.code.gson:gson:$gsonVersion",
@@ -55,7 +57,9 @@ ext {
             koinCompose: "io.insert-koin:koin-androidx-compose:$koinComposeVersion",
     ]
     ui = [
-            coilCompose: "io.coil-kt:coil-compose:$coilComposeVersion",
+            coilCompose : "io.coil-kt:coil-compose:$coilComposeVersion",
+            coilGif     : "io.coil-kt:coil-gif:$coilComposeVersion",
+            composeImage: "com.github.SmartToolFactory:Compose-Image:1.2.2"
     ]
 //    retrofit = [
 //            core         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
@@ -72,7 +76,7 @@ ext {
             roomRx3     : "androidx.room:room-rxjava3:$roomVersion",
     ]
     org = [
-            jsoup: "org.jsoup:jsoup:$jsoupVersion",
+            jsoup     : "org.jsoup:jsoup:$jsoupVersion",
             coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
     ]
     log = [

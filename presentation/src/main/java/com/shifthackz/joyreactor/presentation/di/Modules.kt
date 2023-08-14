@@ -1,9 +1,11 @@
 package com.shifthackz.joyreactor.presentation.di
 
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
-import com.shifthackz.joyreactor.presentation.ui.screen.test.TestScreenViewModel
+import com.shifthackz.joyreactor.presentation.ui.screen.test.PostsViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 
 val viewModelModule = module {
-    viewModelOf(::TestScreenViewModel)
+    viewModel { parameters ->
+        PostsViewModel(parameters.get(), get())
+    }
 }

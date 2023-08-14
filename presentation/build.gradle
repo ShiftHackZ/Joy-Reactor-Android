@@ -40,6 +40,7 @@ dependencies {
     implementation androidx.composeNavigation
     implementation androidx.pagingRuntime
     implementation androidx.pagingCompose
+    implementation androidx.palette
 
     implementation androidx.composeUiGraphics
     implementation androidx.lifecycleViewModel
@@ -48,4 +49,6 @@ dependencies {
 
     implementation google.material
     implementation ui.coilCompose
+    implementation ui.coilGif
+    implementation ui.composeImage
 }
