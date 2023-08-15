@@ -1,4 +1,4 @@
-package com.shifthackz.joyreactor.presentation.ui.screen.test
+package com.shifthackz.joyreactor.presentation.ui.screen.posts
 
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
 import com.shifthackz.joyreactor.presentation.mvi.MviState

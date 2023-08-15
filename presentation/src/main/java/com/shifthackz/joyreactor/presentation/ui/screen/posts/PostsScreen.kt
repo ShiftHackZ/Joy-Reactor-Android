@@ -1,4 +1,4 @@
-package com.shifthackz.joyreactor.presentation.ui.screen.test
+package com.shifthackz.joyreactor.presentation.ui.screen.posts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize

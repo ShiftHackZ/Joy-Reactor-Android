@@ -2,6 +2,7 @@ package com.shifthackz.joyreactor
 
 import android.app.Application
 import com.shifthackz.joyreactor.data.di.dataModule
+import com.shifthackz.joyreactor.domain.di.domainModule
 import com.shifthackz.joyreactor.network.di.networkModule
 import com.shifthackz.joyreactor.presentation.di.viewModelModule
 import com.shifthackz.joyreactor.storage.di.storageModule
@@ -18,6 +19,7 @@ class JoyReactorApplication : Application() {
                 networkModule,
                 storageModule,
                 *dataModule,
+                domainModule,
                 viewModelModule,
             )
         }
