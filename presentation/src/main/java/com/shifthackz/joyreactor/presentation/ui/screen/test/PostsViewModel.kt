@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
-import com.shifthackz.joyreactor.presentation.mvi.EmptyState
 import com.shifthackz.joyreactor.presentation.mvi.MviViewModel
 import com.shifthackz.joyreactor.domain.repository.PostsRepository
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI

@@ -12,8 +12,8 @@ android {
 
 dependencies {
     implementation project(":domain")
-//    implementation project(":network")
+    implementation project(":network")
+    implementation project(":storage")
     implementation di.koinCore
-    implementation org.jsoup
     implementation org.coroutines
 }

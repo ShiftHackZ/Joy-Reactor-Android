@@ -10,6 +10,8 @@ android {
 }
 
 dependencies {
+    implementation project(":entity")
     implementation di.koinCore
     implementation org.jsoup
+    implementation org.coroutines
 }

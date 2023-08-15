@@ -2,7 +2,7 @@ package com.shifthackz.joyreactor.presentation.ui.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.domain.repository.PostsRepository
 
 class PostsPagingSource(
@@ -19,7 +19,7 @@ class PostsPagingSource(
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Post> {
         val pageNext = params.key ?: firstKey
         return postsRepository
-            .stub(pageNext)
+            .fetchPage(pageNext)
             .let {
                 LoadResult.Page(
                     data = it.data,
