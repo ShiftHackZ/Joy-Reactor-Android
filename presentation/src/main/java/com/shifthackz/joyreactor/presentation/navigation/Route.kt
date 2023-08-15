@@ -4,7 +4,11 @@ import android.util.Log
 
 enum class Route(val value: String) {
     POSTS("posts/{url}"),
-    TAG("tag");
+    HOME("home"),
+    HOME_FEED("home_feed"),
+    HOME_FEED_NEW("home_feed_new"),
+    HOME_FEED_GOOD("home_feed_good"),
+    HOME_FEED_BEST("home_feed_best");
 
     companion object {
         fun build(route: Route, params: Map<String, String> = mapOf()): String {

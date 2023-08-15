@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="toolbar_title_tag">Tag: %1$s</string>
+
+    <string name="home_tab_feed">Feed</string>
+
+    <string name="feed_tab_new">New</string>
+    <string name="feed_tab_good">Good</string>
+    <string name="feed_tab_best">Best</string>
 </resources>
