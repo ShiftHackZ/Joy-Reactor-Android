@@ -5,4 +5,5 @@ import com.shifthackz.joyreactor.entity.Post
 
 interface PostsRepository {
     suspend fun fetchPage(url: String): PagePayload<Post>
+    suspend fun getPost(id: String): Post
 }

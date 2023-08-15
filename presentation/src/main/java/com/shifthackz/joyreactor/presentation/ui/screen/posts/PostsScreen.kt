@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.shifthackz.joyreactor.presentation.ui.screen.posts
 
 import androidx.compose.foundation.layout.Arrangement
@@ -5,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +19,7 @@ import androidx.paging.compose.items
 import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
 import com.shifthackz.joyreactor.presentation.mvi.MviScreen
+import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
 import com.shifthackz.joyreactor.presentation.ui.widget.PostComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.ToolbarComposable
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +28,7 @@ class PostsScreen(
     private val viewModel: PostsViewModel,
     private val navigateBack: () -> Unit = {},
     private val openPosts: (String) -> Unit = {},
+    private val openSlider: (Post) -> Unit = {},
 ) : MviScreen<PostsState, EmptyEffect>(viewModel) {
 
     @Composable
@@ -34,6 +39,7 @@ class PostsScreen(
             pagingFlow = viewModel.pagingFlow,
             navigateBack = navigateBack,
             openPosts = openPosts,
+            openSlider = openSlider,
         )
     }
 }
@@ -45,14 +51,16 @@ private fun ScreenContent(
     pagingFlow: Flow<PagingData<Post>>,
     navigateBack: () -> Unit = {},
     openPosts: (String) -> Unit = {},
+    openSlider: (Post) -> Unit = {},
 ) {
+    SetStatusBarColor()
     val lazyPosts = pagingFlow.collectAsLazyPagingItems()
     Scaffold(
         modifier = modifier,
         topBar = {
             ToolbarComposable(
                 toolbarUI = state.toolbarUI,
-                onNavigateBack = navigateBack,
+                navigateBack = navigateBack,
             )
         }
     ) { paddingValues ->
@@ -63,7 +71,11 @@ private fun ScreenContent(
         ) {
             items(lazyPosts) { post ->
                 post?.let {
-                    PostComposable(post = it, openPosts = openPosts)
+                    PostComposable(
+                        post = it,
+                        openPosts = openPosts,
+                        openSlider = openSlider,
+                    )
                 }
             }
         }

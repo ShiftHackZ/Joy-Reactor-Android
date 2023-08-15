@@ -1,6 +1,7 @@
 package com.shifthackz.joyreactor.data.datasource.local
 
 import com.shifthackz.joyreactor.data.mappers.toContentEntities
+import com.shifthackz.joyreactor.data.mappers.toDomain
 import com.shifthackz.joyreactor.data.mappers.toEntity
 import com.shifthackz.joyreactor.domain.datasource.PostsDataSource
 import com.shifthackz.joyreactor.entity.Author
@@ -10,6 +11,7 @@ import com.shifthackz.joyreactor.storage.db.dao.AuthorDao
 import com.shifthackz.joyreactor.storage.db.dao.ContentDao
 import com.shifthackz.joyreactor.storage.db.dao.PostDao
 import com.shifthackz.joyreactor.storage.db.dao.TagDao
+import com.shifthackz.joyreactor.storage.db.dto.FullPostDto
 import com.shifthackz.joyreactor.storage.db.relation.PostToTagRelation
 import kotlinx.coroutines.coroutineScope
 
@@ -35,6 +37,10 @@ internal class PostsLocalDataSource(
         postDao.upsertList(posts.map(Post::toEntity))
         postDao.joinToTags(tagsRelations)
         contentDao.upsertList(posts.map(Post::toContentEntities).flatten())
+    }
+
+    override suspend fun getPost(id: String): Post {
+        return postDao.queryById(id).let(FullPostDto::toDomain)
     }
 
     private suspend fun saveAuthors(authors: List<Author>) {

@@ -11,5 +11,6 @@ sealed interface PostsDataSource {
 
     interface Local : PostsDataSource {
         suspend fun savePosts(posts: List<Post>)
+        suspend fun getPost(id: String): Post
     }
 }

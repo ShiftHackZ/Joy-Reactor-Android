@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("MemberVisibilityCanBePrivate", "unused")
 
 package com.shifthackz.joyreactor.presentation.mvi
 
@@ -38,7 +38,7 @@ abstract class MviViewModel<S : MviState, E : MviEffect> : ViewModel() {
         mutableState.tryEmit(state)
     }
 
-    fun emitEffect(effect: E) {
+    open fun emitEffect(effect: E) {
         viewModelScope.launch(Dispatchers.Main.immediate + exceptionHandler) {
             effectChannel.send(effect)
         }

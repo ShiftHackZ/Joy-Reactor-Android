@@ -55,12 +55,16 @@ class PostsParser {
                     val imageContainer = contentItem.select(".image")
                     val imageUrlFromA = imageContainer.select("a").attr("href")
                     val imageUrlFromImg = imageContainer.select("img").attr("src")
+                    val videoUrl = imageContainer.select("video").select("source").attr("src")
                     when {
                         imageUrlFromA.isNotBlank() -> contents.add(
                             Content.Image(formatImageUrl(imageUrlFromA))
                         )
-                        imageUrlFromImg.isNotBlank() -> contents.add(
+                        imageUrlFromImg.isNotBlank() && videoUrl.isBlank() -> contents.add(
                             Content.Image(formatImageUrl(imageUrlFromImg))
+                        )
+                        imageUrlFromImg.isNotBlank() && videoUrl.isNotBlank() -> contents.add(
+                            Content.Video(formatImageUrl(videoUrl))
                         )
                     }
                 }

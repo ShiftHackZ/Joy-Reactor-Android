@@ -2,9 +2,10 @@
 
 package com.shifthackz.joyreactor.presentation.entity
 
+import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.presentation.R
 
-data class ToolbarUI(
+data class ToolbarUI constructor(
     val backButton: Boolean = false,
     val title: TextUI = TextUI.empty,
 ) {
@@ -23,8 +24,9 @@ data class ToolbarUI(
                     url.split("/").lastOrNull() ?: "",
                 ),
             )
-
-            else -> ToolbarUI()
+            else -> ToolbarUI(
+                backButton = !JoyReactorLink.values().filter(JoyReactorLink::isRootLink).any { it.url.contains(url) }
+            )
         }
     }
 }

@@ -8,4 +8,8 @@ val viewModelModule = module {
     viewModel { parameters ->
         PostsViewModel(parameters.get(), get())
     }
+
+//    viewModel { parameters ->
+//        ContentSliderViewModel(parameters.get(), get())
+//    }
 }

@@ -23,6 +23,7 @@ ext {
     gsonVersion = '2.10.1'
     googleMaterialVersion = '1.9.0'
     accompanistSystemUiControllerVersion = '0.30.1'
+    zoomableVersion = '1.5.0'
 
     testJunitVersion = '4.13.2'
 
@@ -50,6 +51,7 @@ ext {
             gson                         : "com.google.code.gson:gson:$gsonVersion",
             material                     : "com.google.android.material:material:$googleMaterialVersion",
             accompanistSystemUiController: "com.google.accompanist:accompanist-systemuicontroller:$accompanistSystemUiControllerVersion",
+            exoplayer                    : "com.google.android.exoplayer:exoplayer:2.18.1",
     ]
     di = [
             koinCore   : "io.insert-koin:koin-core:$koinVersion",
@@ -59,7 +61,7 @@ ext {
     ui = [
             coilCompose : "io.coil-kt:coil-compose:$coilComposeVersion",
             coilGif     : "io.coil-kt:coil-gif:$coilComposeVersion",
-            composeImage: "com.github.SmartToolFactory:Compose-Image:1.2.2"
+            zoomable: "net.engawapg.lib:zoomable:$zoomableVersion"
     ]
 //    retrofit = [
 //            core         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
@@ -72,7 +74,7 @@ ext {
 //    ]
     database = [
             roomRuntime   : "androidx.room:room-runtime:$roomVersion",
-            roomKtx   : "androidx.room:room-ktx:$roomVersion",
+            roomKtx       : "androidx.room:room-ktx:$roomVersion",
             roomCompiler  : "androidx.room:room-compiler:$roomVersion",
             roomCoroutines: "androidx.room:room-coroutines:2.1.0-alpha04",
     ]

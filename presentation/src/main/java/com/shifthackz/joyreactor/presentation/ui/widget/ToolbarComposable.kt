@@ -9,6 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,7 +21,8 @@ import com.shifthackz.joyreactor.presentation.entity.asString
 fun ToolbarComposable(
     modifier: Modifier = Modifier,
     toolbarUI: ToolbarUI,
-    onNavigateBack: () -> Unit = {},
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
+    navigateBack: () -> Unit = {},
 ) {
     if (toolbarUI.isEmpty) return
     TopAppBar(
@@ -31,9 +34,10 @@ fun ToolbarComposable(
                 overflow = TextOverflow.Ellipsis,
             )
         },
+        colors = colors,
         navigationIcon = {
             if (toolbarUI.backButton) {
-                IconButton(onClick = onNavigateBack) {
+                IconButton(onClick = navigateBack) {
                     Icon(
                         Icons.Outlined.ArrowBack,
                         contentDescription = "Back button",

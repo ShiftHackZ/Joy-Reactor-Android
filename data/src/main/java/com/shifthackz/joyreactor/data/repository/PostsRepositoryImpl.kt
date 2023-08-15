@@ -1,9 +1,9 @@
 package com.shifthackz.joyreactor.data.repository
 
 import com.shifthackz.joyreactor.domain.datasource.PostsDataSource
+import com.shifthackz.joyreactor.domain.repository.PostsRepository
 import com.shifthackz.joyreactor.entity.PagePayload
 import com.shifthackz.joyreactor.entity.Post
-import com.shifthackz.joyreactor.domain.repository.PostsRepository
 import kotlinx.coroutines.coroutineScope
 
 class PostsRepositoryImpl(
@@ -15,5 +15,9 @@ class PostsRepositoryImpl(
         val page = postsRds.fetchPage(url)
         postsLds.savePosts(page.data)
         return@coroutineScope page
+    }
+
+    override suspend fun getPost(id: String): Post {
+        return postsLds.getPost(id)
     }
 }

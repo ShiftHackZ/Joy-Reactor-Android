@@ -3,9 +3,15 @@ package com.shifthackz.joyreactor.presentation.activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,17 +19,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.shifthackz.joyreactor.entity.JoyReactorLink
+import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.navigation.Argument
 import com.shifthackz.joyreactor.presentation.navigation.Route
 import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
 import com.shifthackz.joyreactor.presentation.navigation.encodeNavArg
 import com.shifthackz.joyreactor.presentation.ui.screen.home.homeNavGraph
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
+import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.JoyYouTheme
+import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-class MainActivity : ComponentActivity() {
+class JoyReactorActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,39 +44,83 @@ class MainActivity : ComponentActivity() {
                     Route.build(Route.POSTS, mapOf(Argument.URL to url.encodeNavArg()))
                 )
             }
+
             JoyYouTheme(dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Route.HOME.value,
-                    ) {
-                        homeNavGraph(
-                            route = Route.HOME,
-                            openPosts = openPosts,
-                        )
-
-                        composable(
-                            route = Route.POSTS.value,
-                            arguments = listOf(
-                                navArgument(Argument.URL) { type = NavType.StringType }
-                            ),
-                        ) { entry ->
-                            val url = entry.arguments
-                                ?.getString(Argument.URL)
-                                ?.let(String::decodeNavArg)
-                                ?: JoyReactorLink.NEW.url
-
-                            PostsScreen(
-                                viewModel = koinViewModel(
-                                    parameters = { parametersOf(url) },
-                                ),
-                                navigateBack = navigateBack,
+                    val sliderScreenState = remember {
+                        mutableStateOf<Post?>(null)
+                    }
+                    val openSlider: (Post) -> Unit = { post ->
+                        sliderScreenState.value = post
+//                        navController.navigate(
+//                            Route.build(Route.SLIDER, mapOf(Argument.POST_ID to postId))
+//                        )
+                    }
+                    Box(Modifier.fillMaxSize()) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Route.HOME.value,
+                        ) {
+                            homeNavGraph(
+                                route = Route.HOME,
                                 openPosts = openPosts,
-                            ).Build()
+                                openSlider = openSlider,
+                            )
+
+                            composable(
+                                route = Route.POSTS.value,
+                                arguments = listOf(
+                                    navArgument(Argument.URL) { type = NavType.StringType },
+                                ),
+                            ) { entry ->
+                                val url = entry.arguments
+                                    ?.getString(Argument.URL)
+                                    ?.let(String::decodeNavArg)
+                                    ?: JoyReactorLink.HOME_NEW.url
+
+                                PostsScreen(
+                                    viewModel = koinViewModel(
+                                        parameters = { parametersOf(url) },
+                                    ),
+                                    navigateBack = navigateBack,
+                                    openPosts = openPosts,
+                                    openSlider = openSlider,
+                                ).Build()
+                            }
+
+//                            composable(
+//                                route = Route.SLIDER.value,
+//                                arguments = listOf(
+//                                    navArgument(Argument.POST_ID) { type = NavType.StringType },
+//                                ),
+//                            ) { entry ->
+//                                val postId = entry.arguments?.getString(Argument.POST_ID) ?: ""
+//                                ContentSliderScreen(
+//                                    viewModel = koinViewModel(
+//                                        parameters = { parametersOf(postId) }
+//                                    ),
+//                                    navigateBack = navigateBack,
+//                                ).Build()
+//                            }
                         }
+                        AnimatedVisibility(
+                            visible = sliderScreenState.value != null,
+                            enter = fadeIn(),
+                            exit = fadeOut(),
+                        ) {
+                            sliderScreenState.value?.let { post ->
+                                ContentSliderScreen(
+                                    post = post,
+                                    navigateBack = {
+                                        sliderScreenState.value = null
+                                    },
+                                )
+                            }
+                        }
+                        sliderScreenState.value ?: run { SetStatusBarColor() }
                     }
                 }
             }

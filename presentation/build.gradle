@@ -48,7 +48,9 @@ dependencies {
     implementation google.accompanistSystemUiController
 
     implementation google.material
+    implementation google.exoplayer
     implementation ui.coilCompose
     implementation ui.coilGif
-    implementation ui.composeImage
+    implementation ui.zoomable
+    implementation org.coroutines
 }

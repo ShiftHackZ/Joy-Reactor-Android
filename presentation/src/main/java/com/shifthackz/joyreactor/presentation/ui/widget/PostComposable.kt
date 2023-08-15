@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,20 +43,34 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.drawable.toBitmapOrNull
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.shifthackz.joyreactor.entity.Content
+import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.entity.Post
+import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
+
 
 @Composable
 fun PostComposable(
     modifier: Modifier = Modifier,
     post: Post,
     openPosts: (String) -> Unit = {},
+    openSlider: (Post) -> Unit = {},
 ) {
     Column(
         modifier.padding(top = 12.dp),
@@ -100,16 +116,16 @@ fun PostComposable(
         }
         post.contents.groupBy(Content::type).toSortedMap().forEach {
             when (it.key) {
-                Content.Type.IMAGE -> Column {
-                    val pagerState = rememberPagerState()
+                Content.Type.MEDIA -> Column {
+                    val pagerState = rememberPagerState { it.value.size }
                     val minHeightState = remember { mutableStateOf(0.001.dp) }
-
                     HorizontalPager(
-                        modifier = Modifier.defaultMinSize(minHeight = minHeightState.value),
-                        pageCount = it.value.size,
+                        modifier = Modifier
+                            .clickable { openSlider(post) }
+                            .defaultMinSize(minHeight = minHeightState.value),
                         state = pagerState,
                     ) { index ->
-                        RenderContent(
+                        RenderPostContent(
                             modifier = Modifier.defaultMinSize(minHeight = minHeightState.value),
                             content = it.value[index],
                             onHeight = { dp ->
@@ -142,8 +158,8 @@ fun PostComposable(
                         }
                     }
                 }
-                else ->  it.value.forEach { content ->
-                    RenderContent(content = content)
+                else -> it.value.forEach { content ->
+                    RenderPostContent(content = content)
                 }
             }
         }
@@ -155,9 +171,11 @@ fun PostComposable(
 }
 
 @Composable
-fun RenderContent(
+fun RenderPostContent(
     modifier: Modifier = Modifier,
     content: Content,
+    imageBlur: Boolean = true,
+    imageZoom: Boolean = false,
     onHeight: (Dp) -> Unit = {},
 ) {
     val textModifier = modifier
@@ -168,27 +186,35 @@ fun RenderContent(
             val localDensity = LocalDensity.current
             Box(modifier) {
                 val drawableState = remember { mutableStateOf<Drawable?>(null) }
-                drawableState.value?.toBitmapOrNull()?.let {
+                drawableState.value?.takeIf { imageBlur }?.toBitmapOrNull()?.let { bmp ->
                     Image(
-                        modifier = modifier.fillMaxSize().blur(64.dp),
-                        painter = BitmapPainter(it.asImageBitmap()),
+                        modifier = modifier
+                            .fillMaxSize()
+                            .blur(64.dp),
+                        painter = BitmapPainter(bmp.asImageBitmap()),
                         contentDescription = "bg",
                         contentScale = ContentScale.FillBounds,
                     )
                 }
 
+                val request = ImageRequest.Builder(LocalContext.current)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .decoderFactory(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            (ImageDecoderDecoder.Factory())
+                        } else {
+                            (GifDecoder.Factory())
+                        }
+                    )
+                    .data(content.url)
+                    .build()
+
+                val ctx = LocalContext.current
+                LaunchedEffect(Unit) { ImageLoader(ctx).enqueue(request) }
+
                 AsyncImage(
                     modifier = modifier.fillMaxWidth(),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .decoderFactory(
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                (ImageDecoderDecoder.Factory())
-                            } else {
-                                (GifDecoder.Factory())
-                            }
-                        )
-                        .data(content.url)
-                        .build(),
+                    model = request,
                     contentScale = ContentScale.FillWidth,
                     contentDescription = null,
                     onState = { state ->
@@ -203,7 +229,6 @@ fun RenderContent(
                                         .let(onHeight)
                                 }
                             }
-
                             else -> Unit
                         }
                     }
@@ -219,5 +244,46 @@ fun RenderContent(
             modifier = textModifier,
             text = content.text,
         )
+        is Content.Video -> {
+            val defaultDataSourceFactory = DefaultHttpDataSource.Factory()
+                .setConnectTimeoutMs(DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS)
+                .setReadTimeoutMs(DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS)
+                .setDefaultRequestProperties(
+                    mapOf("Referer" to JoyReactorLink.HOME_BEST.url)
+                )
+                .setAllowCrossProtocolRedirects(false)
+                .setKeepPostFor302Redirects(false)
+
+            val dataSourceFactory = DefaultDataSource.Factory(
+                LocalContext.current,
+                defaultDataSourceFactory,
+            )
+
+            val exoPlayer = ExoPlayer.Builder(LocalContext.current)
+                .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+                .build()
+                .apply {
+                    val url = content.url.decodeNavArg()
+                    setMediaItem(MediaItem.fromUri(url))
+                }
+
+            DisposableEffect(
+                key1 = AndroidView(
+                    modifier = modifier.fillMaxSize(),
+                    factory = { ctx ->
+                        StyledPlayerView(ctx).apply {
+                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+                            controllerHideOnTouch = true
+                            controllerShowTimeoutMs = 1500
+                            player = exoPlayer.apply { prepare() }
+                        }
+                    }
+                ),
+                effect = {
+                    onDispose { exoPlayer.release() }
+                },
+            )
+        }
+
     }
 }
