@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val navigateBack: () -> Unit = { navController.navigateUp() }
-            JoyYouTheme {
+            JoyYouTheme(dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,

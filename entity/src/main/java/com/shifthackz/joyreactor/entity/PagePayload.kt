@@ -1,4 +1,4 @@
-package com.shifthackz.joyreactor.domain.entity
+package com.shifthackz.joyreactor.entity
 
 data class PagePayload<T: Any>(
     val data: List<T>,

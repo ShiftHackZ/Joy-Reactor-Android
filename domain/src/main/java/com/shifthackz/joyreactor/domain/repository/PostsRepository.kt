@@ -1,8 +1,8 @@
 package com.shifthackz.joyreactor.domain.repository
 
-import com.shifthackz.joyreactor.domain.entity.PagePayload
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.PagePayload
+import com.shifthackz.joyreactor.entity.Post
 
 interface PostsRepository {
-    suspend fun stub(url: String): PagePayload<Post>
+    suspend fun fetchPage(url: String): PagePayload<Post>
 }

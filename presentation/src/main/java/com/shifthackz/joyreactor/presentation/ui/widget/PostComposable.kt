@@ -4,7 +4,6 @@ package com.shifthackz.joyreactor.presentation.ui.widget
 
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,14 +42,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmapOrNull
-import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-import com.shifthackz.joyreactor.domain.entity.Content
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.Content
+import com.shifthackz.joyreactor.entity.Post
 
 @Composable
 fun PostComposable(
@@ -126,18 +124,20 @@ fun PostComposable(
                             .align(Alignment.CenterHorizontally)
                             .height(16.dp)
                             .padding(start = 4.dp),
-                        horizontalArrangement = Arrangement.Start
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         repeat(it.value.size) { iteration ->
+                            val isActive = pagerState.currentPage == iteration
                             val color = MaterialTheme.colorScheme.primary.copy(
-                                alpha = if (pagerState.currentPage == iteration) 1.0f else 0.5f
+                                alpha = if (isActive) 1.0f else 0.5f
                             )
                             Box(
                                 modifier = Modifier
                                     .padding(2.dp)
                                     .clip(CircleShape)
                                     .background(color)
-                                    .size(8.dp)
+                                    .size((if (isActive) 8 else 5).dp)
                             )
                         }
                     }

@@ -13,9 +13,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
-import com.shifthackz.joyreactor.presentation.mvi.EmptyState
 import com.shifthackz.joyreactor.presentation.mvi.MviScreen
 import com.shifthackz.joyreactor.presentation.ui.widget.PostComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.ToolbarComposable

@@ -1,20 +1,18 @@
-package com.shifthackz.joyreactor.data
+package com.shifthackz.joyreactor.network.parser
 
-import android.util.Log
-import com.shifthackz.joyreactor.domain.entity.Author
-import com.shifthackz.joyreactor.domain.entity.Content
-import com.shifthackz.joyreactor.domain.entity.PagePayload
-import com.shifthackz.joyreactor.domain.entity.Post
-import com.shifthackz.joyreactor.domain.entity.Tag
+import com.shifthackz.joyreactor.entity.Author
+import com.shifthackz.joyreactor.entity.Content
+import com.shifthackz.joyreactor.entity.PagePayload
+import com.shifthackz.joyreactor.entity.Post
+import com.shifthackz.joyreactor.entity.Tag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
-class BasePostGetter {
+class PostsParser {
 
-    suspend fun stub(url: String): PagePayload<Post> = withContext(Dispatchers.IO) {
+    suspend fun fetchPage(url: String): PagePayload<Post> = withContext(Dispatchers.IO) {
         val posts = mutableListOf<Post>()
-//        val doc = Jsoup.connect("https://joyreactor.cc/all").get()
         val doc = Jsoup.connect(url).get()
         val postContainers = doc.select(".postContainer")
         for (i in 0 until postContainers.size) {

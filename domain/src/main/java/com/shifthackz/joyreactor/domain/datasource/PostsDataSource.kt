@@ -1,11 +1,15 @@
 package com.shifthackz.joyreactor.domain.datasource
 
-import com.shifthackz.joyreactor.domain.entity.PagePayload
-import com.shifthackz.joyreactor.domain.entity.Post
+import com.shifthackz.joyreactor.entity.PagePayload
+import com.shifthackz.joyreactor.entity.Post
 
 sealed interface PostsDataSource {
 
     interface Remote : PostsDataSource {
-        suspend fun stub(url: String): PagePayload<Post>
+        suspend fun fetchPage(url: String): PagePayload<Post>
+    }
+
+    interface Local : PostsDataSource {
+        suspend fun savePosts(posts: List<Post>)
     }
 }

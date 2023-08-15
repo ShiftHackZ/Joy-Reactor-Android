@@ -71,9 +71,10 @@ ext {
 //            logging: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
 //    ]
     database = [
-            roomRuntime : "androidx.room:room-runtime:$roomVersion",
-            roomCompiler: "androidx.room:room-compiler:$roomVersion",
-            roomRx3     : "androidx.room:room-rxjava3:$roomVersion",
+            roomRuntime   : "androidx.room:room-runtime:$roomVersion",
+            roomKtx   : "androidx.room:room-ktx:$roomVersion",
+            roomCompiler  : "androidx.room:room-compiler:$roomVersion",
+            roomCoroutines: "androidx.room:room-coroutines:2.1.0-alpha04",
     ]
     org = [
             jsoup     : "org.jsoup:jsoup:$jsoupVersion",
