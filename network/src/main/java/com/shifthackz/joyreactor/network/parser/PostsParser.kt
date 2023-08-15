@@ -1,10 +1,12 @@
 package com.shifthackz.joyreactor.network.parser
 
 import com.shifthackz.joyreactor.entity.Author
+import com.shifthackz.joyreactor.entity.Comment
 import com.shifthackz.joyreactor.entity.Content
 import com.shifthackz.joyreactor.entity.PagePayload
 import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.entity.Tag
+import com.shifthackz.joyreactor.network.extensions.formatImageUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -27,8 +29,9 @@ class PostsParser {
                 avatarUrl = postContainer
                     .select("img.avatar")
                     .attr("src")
-                    .let(::formatImageUrl),
+                    .let(String::formatImageUrl),
             )
+            val comments = mutableListOf<Comment>()
 
             val rating = postContainer.select(".post_rating").text().toDoubleOrNull() ?: 0.0
 
@@ -58,13 +61,13 @@ class PostsParser {
                     val videoUrl = imageContainer.select("video").select("source").attr("src")
                     when {
                         imageUrlFromA.isNotBlank() -> contents.add(
-                            Content.Image(formatImageUrl(imageUrlFromA))
+                            Content.Image(imageUrlFromA.formatImageUrl())
                         )
                         imageUrlFromImg.isNotBlank() && videoUrl.isBlank() -> contents.add(
-                            Content.Image(formatImageUrl(imageUrlFromImg))
+                            Content.Image(imageUrlFromImg.formatImageUrl())
                         )
                         imageUrlFromImg.isNotBlank() && videoUrl.isNotBlank() -> contents.add(
-                            Content.Video(formatImageUrl(videoUrl))
+                            Content.Video(videoUrl.formatImageUrl())
                         )
                     }
                 }
@@ -76,6 +79,7 @@ class PostsParser {
                     contents = contents.toSet().toList(),
                     tags = tags,
                     rating = rating,
+                    comments = comments,
                 )
                 posts.add(post)
             }
@@ -89,7 +93,4 @@ class PostsParser {
         )
     }
 
-    private fun formatImageUrl(input: String): String {
-        return if (input.startsWith("//")) "https:$input" else input
-    }
 }

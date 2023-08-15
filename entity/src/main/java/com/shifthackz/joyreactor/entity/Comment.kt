@@ -1,10 +1,9 @@
 package com.shifthackz.joyreactor.entity
 
-data class Post(
+data class Comment(
     val id: String,
+    val parentId: String?,
+    val text: String,
     val author: Author,
-    val contents: List<Content>,
-    val tags: List<Tag>,
     val rating: Double,
-    val comments: List<Comment>,
 )
