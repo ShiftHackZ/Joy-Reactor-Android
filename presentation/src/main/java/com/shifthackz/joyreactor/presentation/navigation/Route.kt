@@ -12,7 +12,8 @@ enum class Route(val value: String) {
     HOME_DISCUSSED_ALL("home_discussed_all"),
     HOME_DISCUSSED_GOOD("home_discussed_good"),
     HOME_DISCUSSED_FLAME("home_discussed_flame"),
-    SLIDER("slider/{${Argument.POST_ID}}");
+    SLIDER("slider/{${Argument.POST_ID}}"),
+    COMMENTS("comments/{${Argument.POST_ID}}");
 
     companion object {
         fun build(route: Route, params: Map<String, String> = mapOf()): String {

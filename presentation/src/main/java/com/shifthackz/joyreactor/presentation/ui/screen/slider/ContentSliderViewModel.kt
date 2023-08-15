@@ -2,7 +2,7 @@
 //
 //import android.util.Log
 //import androidx.lifecycle.viewModelScope
-//import com.shifthackz.joyreactor.domain.usecase.GetFullPostUseCase
+//import com.shifthackz.joyreactor.domain.usecase.post.GetFullPostUseCase
 //import com.shifthackz.joyreactor.presentation.mvi.MviStateViewModel
 //import kotlinx.coroutines.launch
 //

@@ -3,7 +3,7 @@ package com.shifthackz.joyreactor.presentation.ui.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.shifthackz.joyreactor.domain.usecase.FetchPostsPageUseCase
+import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
 import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.entity.Post
 

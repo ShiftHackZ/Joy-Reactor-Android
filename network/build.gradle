@@ -14,4 +14,9 @@ dependencies {
     implementation di.koinCore
     implementation org.jsoup
     implementation org.coroutines
+    implementation retrofit.core
+    implementation retrofit.converterGson
+    implementation okhttp.core
+    implementation okhttp.logging
+    implementation google.gson
 }

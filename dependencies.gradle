@@ -11,8 +11,8 @@ ext {
     koinVersion = '3.4.3'
     koinComposeVersion = '3.4.6'
     coilComposeVersion = '2.4.0'
-//    retrofitVersion = '2.9.0'
-//    okHttpVersion = '5.0.0-alpha.11'
+    retrofitVersion = '2.9.0'
+    okHttpVersion = '5.0.0-alpha.11'
     roomVersion = '2.5.2'
     jsoupVersion = '1.16.1'
     coroutinesVersion = '1.7.3'
@@ -63,15 +63,14 @@ ext {
             coilGif     : "io.coil-kt:coil-gif:$coilComposeVersion",
             zoomable: "net.engawapg.lib:zoomable:$zoomableVersion"
     ]
-//    retrofit = [
-//            core         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
-//            converterGson: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
-//            adapterRx    : "com.squareup.retrofit2:adapter-rxjava3:$retrofitVersion",
-//    ]
-//    okhttp = [
-//            core   : "com.squareup.okhttp3:okhttp:$okHttpVersion",
-//            logging: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
-//    ]
+    retrofit = [
+            core         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            converterGson: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+    ]
+    okhttp = [
+            core   : "com.squareup.okhttp3:okhttp:$okHttpVersion",
+            logging: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
+    ]
     database = [
             roomRuntime   : "androidx.room:room-runtime:$roomVersion",
             roomKtx       : "androidx.room:room-ktx:$roomVersion",

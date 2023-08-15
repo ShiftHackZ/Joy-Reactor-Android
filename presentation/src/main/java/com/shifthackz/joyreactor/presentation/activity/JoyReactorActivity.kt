@@ -24,6 +24,7 @@ import com.shifthackz.joyreactor.presentation.navigation.Argument
 import com.shifthackz.joyreactor.presentation.navigation.Route
 import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
 import com.shifthackz.joyreactor.presentation.navigation.encodeNavArg
+import com.shifthackz.joyreactor.presentation.ui.screen.comments.CommentsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.home.homeNavGraph
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
@@ -55,9 +56,6 @@ class JoyReactorActivity : ComponentActivity() {
                     }
                     val openSlider: (Post) -> Unit = { post ->
                         sliderScreenState.value = post
-//                        navController.navigate(
-//                            Route.build(Route.SLIDER, mapOf(Argument.POST_ID to postId))
-//                        )
                     }
                     Box(Modifier.fillMaxSize()) {
                         NavHost(
@@ -91,21 +89,25 @@ class JoyReactorActivity : ComponentActivity() {
                                 ).Build()
                             }
 
-//                            composable(
-//                                route = Route.SLIDER.value,
-//                                arguments = listOf(
-//                                    navArgument(Argument.POST_ID) { type = NavType.StringType },
-//                                ),
-//                            ) { entry ->
-//                                val postId = entry.arguments?.getString(Argument.POST_ID) ?: ""
-//                                ContentSliderScreen(
-//                                    viewModel = koinViewModel(
-//                                        parameters = { parametersOf(postId) }
-//                                    ),
-//                                    navigateBack = navigateBack,
-//                                ).Build()
-//                            }
+                            composable(
+                                route = Route.COMMENTS.value,
+                                arguments = listOf(
+                                    navArgument(Argument.POST_ID) { type = NavType.StringType },
+                                ),
+                            ) { entry ->
+                                val postId = entry.arguments?.getString(Argument.POST_ID) ?: ""
+                                CommentsScreen(
+                                    viewModel = koinViewModel(
+                                        parameters = { parametersOf(postId) }
+                                    )
+                                ).Build()
+                            }
                         }
+                        /*Handler(Looper.getMainLooper()).postDelayed({
+                            navController.navigate(
+                                Route.build(Route.COMMENTS, mapOf(Argument.POST_ID to "5612253"))
+                            )
+                        }, 2000L)*/
                         AnimatedVisibility(
                             visible = sliderScreenState.value != null,
                             enter = fadeIn(),

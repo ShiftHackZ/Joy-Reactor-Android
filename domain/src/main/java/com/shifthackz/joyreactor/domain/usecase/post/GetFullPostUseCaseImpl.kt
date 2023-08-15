@@ -1,4 +1,4 @@
-package com.shifthackz.joyreactor.domain.usecase
+package com.shifthackz.joyreactor.domain.usecase.post
 
 import com.shifthackz.joyreactor.domain.repository.PostsRepository
 import com.shifthackz.joyreactor.entity.Post

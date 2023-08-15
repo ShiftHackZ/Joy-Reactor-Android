@@ -36,5 +36,6 @@ fun FullPostDto.toDomain(): Post = with(this) {
         contents = contents.map(ContentEntity::toDomain),
         tags = tags.map(TagEntity::toDomain),
         rating = post.rating,
+        comments = emptyList(),
     )
 }
