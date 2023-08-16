@@ -8,7 +8,7 @@ class CommentsRemoteDataSource(
     private val commentsParser: CommentsParser,
 ) : CommentsDataSource.Remote {
 
-    override suspend fun fetchComments(postId: String): List<Comment> {
+    override suspend fun fetchComments(postId: String): Result<List<Comment>> {
         return commentsParser.fetchComments(postId)
     }
 }

@@ -9,7 +9,7 @@ internal class PostsRemoteDataSource(
     private val postsParser: PostsParser,
 ) : PostsDataSource.Remote {
 
-    override suspend fun fetchPage(url: String): PagePayload<Post> {
+    override suspend fun fetchPage(url: String): Result<PagePayload<Post>> {
         return postsParser.fetchPage(url)
     }
 }

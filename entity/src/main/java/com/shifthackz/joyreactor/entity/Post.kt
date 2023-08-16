@@ -1,5 +1,7 @@
 package com.shifthackz.joyreactor.entity
 
+import java.util.Date
+
 data class Post(
     val id: String,
     val author: Author,
@@ -7,4 +9,7 @@ data class Post(
     val tags: List<Tag>,
     val rating: Double,
     val comments: List<Comment>,
+    val estimatedCommentsCount: Int,
+    val date: Date,
+    val url: String,
 )

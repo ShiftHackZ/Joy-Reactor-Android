@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
-import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
 import com.shifthackz.joyreactor.presentation.mvi.MviViewModel
@@ -26,11 +25,11 @@ class PostsViewModel(
         enablePlaceholders = false,
     )
 
-    private val pager: Pager<String, Post> = Pager(
+    private val pager: Pager<String, PostsUI> = Pager(
         config = config,
         initialKey = url,
         pagingSourceFactory = { PostsPagingSource(fetchPostsPageUseCase, url) },
     )
 
-    val pagingFlow: Flow<PagingData<Post>> = pager.flow
+    val pagingFlow: Flow<PagingData<PostsUI>> = pager.flow
 }

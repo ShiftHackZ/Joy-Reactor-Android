@@ -12,4 +12,16 @@
     <string name="discussed_tab_all">All</string>
     <string name="discussed_tab_good">Good</string>
     <string name="discussed_tab_flame">Flame</string>
+
+    <string name="comments_title">Comments</string>
+
+    <string name="date_format_today">Today at %1$s</string>
+    <string name="date_format_yesterday">Yesterday at %1$s</string>
+    <string name="date_format_days_ago">%1$s days ago</string>
+    <string name="date_format_one_week_ago">Week ago</string>
+    <string name="date_format_weeks_ago">%1$s weeks ago</string>
+    <string name="date_format_one_month_ago">Previous month</string>
+    <string name="date_format_months_ago">%1$s months ago</string>
+    <string name="date_format_year_ago">Year ago</string>
+    <string name="date_format_years_ago">%1$s years ago</string>
 </resources>

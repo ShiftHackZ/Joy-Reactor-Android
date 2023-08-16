@@ -28,6 +28,12 @@ data class PostEntity(
     val id: String = "",
     @ColumnInfo(name = PostContract.RATING)
     val rating: Double = 0.0,
+    @ColumnInfo(name = PostContract.ESTIMATED_COMMENTS_COUNT)
+    val estimatedCommentsCount: Int = 0,
+    @ColumnInfo(name = PostContract.DATE)
+    val date: Long = 0L,
+    @ColumnInfo(name = PostContract.URL)
+    val url: String = "",
     @ColumnInfo(name = PostContract.AUTHOR_NAME)
     val authorName: String = "",
 )

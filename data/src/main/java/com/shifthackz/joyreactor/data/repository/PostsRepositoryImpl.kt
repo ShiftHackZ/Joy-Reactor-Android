@@ -11,13 +11,14 @@ class PostsRepositoryImpl(
     private val postsLds: PostsDataSource.Local,
 ) : PostsRepository {
 
-    override suspend fun fetchPage(url: String): PagePayload<Post> = coroutineScope {
-        val page = postsRds.fetchPage(url)
-        postsLds.savePosts(page.data)
-        return@coroutineScope page
+    override suspend fun fetchPage(url: String): Result<PagePayload<Post>> = coroutineScope {
+        return@coroutineScope postsRds.fetchPage(url).getOrNull()?.let {
+            postsLds.savePosts(it.data)
+            Result.success(it)
+        } ?: Result.failure(IllegalStateException())
     }
 
-    override suspend fun getPost(id: String): Post {
+    override suspend fun getPost(id: String): Result<Post> {
         return postsLds.getPost(id)
     }
 }

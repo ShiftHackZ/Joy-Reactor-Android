@@ -77,3 +77,9 @@ fun SetStatusBarColor(color: Color = MaterialTheme.colorScheme.background) {
         }
     }
 }
+
+@Composable
+fun colors(light: Color, dark: Color): Color {
+    if (isSystemInDarkTheme()) return dark
+    return light
+}

@@ -5,6 +5,6 @@ import com.shifthackz.joyreactor.entity.Comment
 sealed interface CommentsDataSource {
 
     interface Remote {
-        suspend fun fetchComments(postId: String): List<Comment>
+        suspend fun fetchComments(postId: String): Result<List<Comment>>
     }
 }

@@ -7,7 +7,7 @@ internal class FetchPostCommentsUseCaseImpl(
     private val commentsRepository: CommentsRepository,
 ) : FetchPostCommentsUseCase {
 
-    override suspend fun invoke(postId: String): List<Comment> {
+    override suspend fun invoke(postId: String): Result<List<Comment>> {
         return commentsRepository.fetchComments(postId)
     }
 }

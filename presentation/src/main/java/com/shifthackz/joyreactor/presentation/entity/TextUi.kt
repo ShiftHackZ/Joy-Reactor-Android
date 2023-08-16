@@ -59,6 +59,7 @@ fun Any.mapArg(resources: Resources): String = when (this) {
     is TextUI.Resource -> asString(resources)
     is TextUI.Concat -> asString(resources)
     is TextUI.Static -> value
+    is Int -> TextUI.Resource(this).asString(resources)
     else -> this.toString()
 }
 

@@ -39,8 +39,8 @@ internal class PostsLocalDataSource(
         contentDao.upsertList(posts.map(Post::toContentEntities).flatten())
     }
 
-    override suspend fun getPost(id: String): Post {
-        return postDao.queryById(id).let(FullPostDto::toDomain)
+    override suspend fun getPost(id: String): Result<Post> = runCatching {
+        postDao.queryById(id).let(FullPostDto::toDomain)
     }
 
     private suspend fun saveAuthors(authors: List<Author>) {

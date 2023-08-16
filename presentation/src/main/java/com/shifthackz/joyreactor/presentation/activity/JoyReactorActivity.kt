@@ -1,11 +1,14 @@
 package com.shifthackz.joyreactor.presentation.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +29,10 @@ import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
 import com.shifthackz.joyreactor.presentation.navigation.encodeNavArg
 import com.shifthackz.joyreactor.presentation.ui.screen.comments.CommentsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.home.homeNavGraph
+import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
+import com.shifthackz.joyreactor.presentation.ui.screen.webview.WebViewScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.JoyYouTheme
 import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
 import org.koin.androidx.compose.koinViewModel
@@ -40,22 +45,41 @@ class JoyReactorActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val navigateBack: () -> Unit = { navController.navigateUp() }
-            val openPosts: (String) -> Unit = { url ->
-                navController.navigate(
-                    Route.build(Route.POSTS, mapOf(Argument.URL to url.encodeNavArg()))
-                )
-            }
-
             JoyYouTheme(dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val sliderScreenState = remember {
-                        mutableStateOf<Post?>(null)
-                    }
-                    val openSlider: (Post) -> Unit = { post ->
-                        sliderScreenState.value = post
+                    val sliderScreenState = remember { mutableStateOf<Post?>(null) }
+                    val webViewSheetState = remember { mutableStateOf<String?>(null) }
+                    val postsActionsListener = object : PostsActionsListener {
+                        override val openPosts: (String) -> Unit = { url ->
+                            navController.navigate(
+                                Route.build(Route.POSTS, mapOf(Argument.URL to url.encodeNavArg()))
+                            )
+                        }
+                        override val openSlider: (Post) -> Unit = { post ->
+                            sliderScreenState.value = post
+                        }
+                        override val openComments: (String) -> Unit = { postId ->
+                            navController.navigate(
+                                Route.build(Route.COMMENTS, mapOf(Argument.POST_ID to postId))
+                            )
+                        }
+                        override val openWebView: (String) -> Unit = { url ->
+                            webViewSheetState.value = url
+                        }
+                        override val sharePostLink: (String) -> Unit = { url ->
+                            startActivity(
+                                Intent.createChooser(
+                                    Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_TEXT, url)
+                                    },
+                                    null,
+                                )
+                            )
+                        }
                     }
                     Box(Modifier.fillMaxSize()) {
                         NavHost(
@@ -64,8 +88,7 @@ class JoyReactorActivity : ComponentActivity() {
                         ) {
                             homeNavGraph(
                                 route = Route.HOME,
-                                openPosts = openPosts,
-                                openSlider = openSlider,
+                                postsActionsListener = postsActionsListener,
                             )
 
                             composable(
@@ -84,8 +107,7 @@ class JoyReactorActivity : ComponentActivity() {
                                         parameters = { parametersOf(url) },
                                     ),
                                     navigateBack = navigateBack,
-                                    openPosts = openPosts,
-                                    openSlider = openSlider,
+                                    postsActionsListener = postsActionsListener,
                                 ).Build()
                             }
 
@@ -99,15 +121,33 @@ class JoyReactorActivity : ComponentActivity() {
                                 CommentsScreen(
                                     viewModel = koinViewModel(
                                         parameters = { parametersOf(postId) }
-                                    )
+                                    ),
+                                    navigateBack = navigateBack,
                                 ).Build()
                             }
                         }
-                        /*Handler(Looper.getMainLooper()).postDelayed({
-                            navController.navigate(
-                                Route.build(Route.COMMENTS, mapOf(Argument.POST_ID to "5612253"))
-                            )
-                        }, 2000L)*/
+                        AnimatedVisibility(
+                            visible = webViewSheetState.value != null,
+                            enter = slideInVertically(
+                                initialOffsetY = {
+                                    it / 2
+                                },
+                            ),
+                            exit = slideOutVertically(
+                                targetOffsetY = {
+                                    it / 2
+                                },
+                            ),
+                        ) {
+                            webViewSheetState.value?.let { url ->
+                                WebViewScreen(
+                                    url = url,
+                                    navigateBack = {
+                                        webViewSheetState.value = null
+                                    }
+                                )
+                            }
+                        }
                         AnimatedVisibility(
                             visible = sliderScreenState.value != null,
                             enter = fadeIn(),

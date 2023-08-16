@@ -35,21 +35,6 @@ import com.shifthackz.joyreactor.presentation.ui.widget.ToolbarComposable
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 
-//class ContentSliderScreen(
-//    private val viewModel: ContentSliderViewModel,
-//    private val navigateBack: () -> Unit = {},
-//) : MviStateScreen<ContentSliderState>(viewModel) {
-//
-//    @Composable
-//    override fun Content() {
-//        ScreenContent(
-//            modifier = Modifier.fillMaxSize(),
-//            state = viewModel.state.collectAsStateWithLifecycle().value,
-//            navigateBack = navigateBack,
-//        )
-//    }
-//}
-
 @Composable
 fun ContentSliderScreen(
     modifier: Modifier = Modifier,
@@ -122,7 +107,5 @@ fun ContentSliderScreen(
                 contentDescription = null,
             )
         }
-
-
     }
 }

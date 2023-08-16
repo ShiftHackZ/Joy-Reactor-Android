@@ -8,7 +8,7 @@ internal class FetchPostsPageUseCaseImpl(
     private val postsRepository: PostsRepository,
 ) : FetchPostsPageUseCase {
 
-    override suspend fun invoke(url: String): PagePayload<Post> {
+    override suspend fun invoke(url: String): Result<PagePayload<Post>> {
         return postsRepository.fetchPage(url)
     }
 }

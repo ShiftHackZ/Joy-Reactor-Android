@@ -8,22 +8,34 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Comment
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +49,13 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,21 +75,30 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.shifthackz.joyreactor.entity.Author
 import com.shifthackz.joyreactor.entity.Content
 import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.entity.Post
+import com.shifthackz.joyreactor.entity.Tag
+import com.shifthackz.joyreactor.presentation.entity.TextUI
+import com.shifthackz.joyreactor.presentation.entity.asString
 import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
+import com.shifthackz.joyreactor.presentation.ui.formatter.PostDateFormatter
+import com.shifthackz.joyreactor.presentation.ui.formatter.PostTimeFormatter
+import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
+import com.shifthackz.joyreactor.presentation.ui.theme.LightGray
+import com.shifthackz.joyreactor.presentation.ui.theme.LightGray20
+import java.util.Date
 
 
 @Composable
 fun PostComposable(
     modifier: Modifier = Modifier,
     post: Post,
-    openPosts: (String) -> Unit = {},
-    openSlider: (Post) -> Unit = {},
+    postsActionsListener: PostsActionsListener = PostsActionsListener.empty,
 ) {
     Column(
-        modifier.padding(top = 12.dp),
+        modifier = modifier.padding(top = 12.dp, bottom = 22.dp),
     ) {
 //        Text(
 //            text = "==> BEGIN [${post.id}]"
@@ -108,7 +133,7 @@ fun PostComposable(
                             color = MaterialTheme.colorScheme.tertiaryContainer,
                             shape = RoundedCornerShape(4.dp),
                         )
-                        .clickable { openPosts(tag.url) }
+                        .clickable { postsActionsListener.openPosts(tag.url) }
                         .padding(all = 2.dp),
                     text = tag.name,
                 )
@@ -121,7 +146,7 @@ fun PostComposable(
                     val minHeightState = remember { mutableStateOf(0.001.dp) }
                     HorizontalPager(
                         modifier = Modifier
-                            .clickable { openSlider(post) }
+                            .clickable { postsActionsListener.openSlider(post) }
                             .defaultMinSize(minHeight = minHeightState.value),
                         state = pagerState,
                     ) { index ->
@@ -158,15 +183,68 @@ fun PostComposable(
                         }
                     }
                 }
+
                 else -> it.value.forEach { content ->
                     RenderPostContent(content = content)
                 }
             }
         }
-        Text(text = post.rating.toString())
-//        Text(
-//            text = "<== END [${post.id}]"
-//        )
+        Row(
+            modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                imageVector = Icons.Default.DateRange,
+                contentDescription = null,
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 6.dp),
+                text = PostDateFormatter()(post.date).asString(),
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Icon(
+                modifier = Modifier.size(18.dp),
+                imageVector = Icons.Default.AccessTime,
+                contentDescription = null,
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 6.dp),
+                text = PostTimeFormatter()(post.date).asString(),
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PostActonButton(
+                icon = Icons.Default.Star,
+                text = TextUI.Static("${post.rating}"),
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            PostActonButton(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clickable { postsActionsListener.openWebView(post.url) },
+                icon = Icons.Default.Language,
+            )
+            PostActonButton(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clickable { postsActionsListener.sharePostLink(post.url) },
+                icon = Icons.Default.Share,
+            )
+            PostActonButton(
+                modifier = Modifier.clickable { postsActionsListener.openComments(post.id) },
+                icon = Icons.Filled.Comment,
+                text = TextUI.Static("${post.estimatedCommentsCount}"),
+            )
+        }
     }
 }
 
@@ -229,21 +307,25 @@ fun RenderPostContent(
                                         .let(onHeight)
                                 }
                             }
+
                             else -> Unit
                         }
                     }
                 )
             }
         }
+
         is Content.Header -> Text(
             modifier = textModifier,
             text = content.text,
             fontSize = 18.sp,
         )
+
         is Content.Text -> Text(
             modifier = textModifier,
             text = content.text,
         )
+
         is Content.Video -> {
             val defaultDataSourceFactory = DefaultHttpDataSource.Factory()
                 .setConnectTimeoutMs(DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS)
@@ -267,23 +349,155 @@ fun RenderPostContent(
                     setMediaItem(MediaItem.fromUri(url))
                 }
 
-            DisposableEffect(
-                key1 = AndroidView(
-                    modifier = modifier.fillMaxSize(),
-                    factory = { ctx ->
-                        StyledPlayerView(ctx).apply {
-                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
-                            controllerHideOnTouch = true
-                            controllerShowTimeoutMs = 1500
-                            player = exoPlayer.apply { prepare() }
-                        }
+            AndroidView(
+                modifier = modifier.fillMaxSize(),
+                factory = { ctx ->
+                    StyledPlayerView(ctx).apply {
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+                        controllerHideOnTouch = true
+                        controllerShowTimeoutMs = 1500
+                        player = exoPlayer.apply { prepare() }
                     }
-                ),
+                }
+            )
+
+            DisposableEffect(
+                key1 = Unit,
                 effect = {
                     onDispose { exoPlayer.release() }
                 },
             )
         }
-
     }
+}
+
+@Composable
+fun PostActonButton(
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    text: TextUI = TextUI.empty,
+    icon: ImageVector,
+) {
+    Row(
+        modifier = modifier
+            .background(
+                color = if (isSystemInDarkTheme()) LightGray20 else LightGray,
+                shape = RoundedCornerShape(8.dp),
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            modifier = iconModifier
+                .padding(vertical = 8.dp)
+                .padding(start = 8.dp, end = 5.dp)
+                .size(18.dp),
+            imageVector = icon,
+            contentDescription = null,
+        )
+        val label = text.asString()
+        if (label.isNotBlank()) {
+            Text(
+                modifier = textModifier.padding(end = 8.dp, bottom = 2.dp),
+                text = label,
+                fontSize = 20.sp,
+            )
+        } else {
+            Box(modifier = Modifier.padding(end = 3.dp))
+        }
+    }
+}
+
+@Composable
+fun PostShimmer(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(top = 12.dp, bottom = 22.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .shimmer(),
+            )
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .size(height = 20.dp, width = 100.dp)
+                    .shimmer(),
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(all = 8.dp)
+                .padding(bottom = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            repeat((0..3).toList().size) {
+                Box(
+                    modifier = Modifier
+                        .size(height = 18.dp, width = 60.dp)
+                        .shimmer(shape = RoundedCornerShape(4.dp)),
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1.4f)
+                .shimmer(),
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val actionModifier = Modifier
+                .size(width = 70.dp, height = 34.dp)
+                .shimmer(shape = RoundedCornerShape(6.dp))
+            Box(modifier = actionModifier)
+            Spacer(modifier = Modifier.weight(1f))
+            Box(modifier = actionModifier)
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewPostContent(@PreviewParameter(LoremIpsum::class) lorem: String) {
+    PostComposable(
+        post = Post(
+            id = "",
+            author = Author(
+                name = "User Name",
+                avatarUrl = "",
+            ),
+            contents = listOf(
+                Content.Text(lorem.take(500))
+            ),
+            tags = listOf(
+                Tag(
+                    name = "tag", url = "",
+                ),
+            ),
+            rating = 0.0,
+            comments = listOf(),
+            estimatedCommentsCount = 1,
+            date = Date(),
+            url = "",
+        )
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun PreviewPostShimmer() {
+    PostShimmer()
 }

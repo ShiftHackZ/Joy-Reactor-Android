@@ -8,7 +8,7 @@ internal class CommentsRepositoryImpl(
     private val commendsRds: CommentsDataSource.Remote,
 ) : CommentsRepository {
 
-    override suspend fun fetchComments(postId: String): List<Comment> {
+    override suspend fun fetchComments(postId: String): Result<List<Comment>> {
         return commendsRds.fetchComments(postId)
     }
 }

@@ -6,12 +6,16 @@ import com.shifthackz.joyreactor.storage.db.dto.FullPostDto
 import com.shifthackz.joyreactor.storage.db.entity.ContentEntity
 import com.shifthackz.joyreactor.storage.db.entity.PostEntity
 import com.shifthackz.joyreactor.storage.db.entity.TagEntity
+import java.util.Date
 
 fun Post.toEntity(): PostEntity = with(this) {
     PostEntity(
         id = id,
         rating = rating,
         authorName = author.name,
+        estimatedCommentsCount = estimatedCommentsCount,
+        date = date.time,
+        url = url,
     )
 }
 
@@ -37,5 +41,8 @@ fun FullPostDto.toDomain(): Post = with(this) {
         tags = tags.map(TagEntity::toDomain),
         rating = post.rating,
         comments = emptyList(),
+        estimatedCommentsCount = post.estimatedCommentsCount,
+        date = Date(post.date),
+        url = post.url,
     )
 }

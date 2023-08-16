@@ -7,7 +7,7 @@ internal class GetFullPostUseCaseImpl(
     private val postsRepository: PostsRepository,
 ) : GetFullPostUseCase {
 
-    override suspend fun invoke(id: String): Post {
+    override suspend fun invoke(id: String): Result<Post> {
         return postsRepository.getPost(id)
     }
 }

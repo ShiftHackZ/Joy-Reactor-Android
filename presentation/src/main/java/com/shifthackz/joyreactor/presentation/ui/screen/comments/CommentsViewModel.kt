@@ -16,8 +16,7 @@ class CommentsViewModel(
     init {
         viewModelScope.launch {
             fetchPostCommentsUseCase(postId)
-                .let(List<Comment>::toUiModel)
-                .let(CommentsState::Content)
+                .let(Result<List<Comment>>::toUiState)
                 .let(::setState)
         }
     }

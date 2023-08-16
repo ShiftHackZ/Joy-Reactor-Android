@@ -10,7 +10,7 @@ val viewModelModule = module {
         PostsViewModel(parameters.get(), get())
     }
 
-    viewModel { parameters ->
-        CommentsViewModel(parameters.get(), get())
+    viewModel {
+        CommentsViewModel(it.get(), get())
     }
 }
