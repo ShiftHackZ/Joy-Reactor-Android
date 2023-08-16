@@ -4,6 +4,7 @@
 
     <string name="home_tab_feed">Feed</string>
     <string name="home_tab_discussed">Discussed</string>
+    <string name="home_tab_sections">Sections</string>
 
     <string name="feed_tab_new">New</string>
     <string name="feed_tab_good">Good</string>

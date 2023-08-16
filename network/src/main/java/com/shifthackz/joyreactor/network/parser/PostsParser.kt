@@ -8,11 +8,11 @@ import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.entity.PagePayload
 import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.entity.Tag
+import com.shifthackz.joyreactor.network.extensions.baseUrl
 import com.shifthackz.joyreactor.network.extensions.formatImageUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import java.net.URL
 import java.util.Date
 
 
@@ -37,8 +37,7 @@ class PostsParser {
                 .get()
 
             val location = doc.location()
-            val locationUrl = URL(location)
-            val baseUrl = locationUrl.protocol + "://" + locationUrl.host
+            val baseUrl = location.baseUrl()
 
             val postContainers = doc.select(".postContainer")
             for (i in 0 until postContainers.size) {

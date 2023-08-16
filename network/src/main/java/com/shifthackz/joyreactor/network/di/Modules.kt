@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.shifthackz.joyreactor.network.interceptor.LoggingInterceptor
 import com.shifthackz.joyreactor.network.parser.CommentsParser
 import com.shifthackz.joyreactor.network.parser.PostsParser
+import com.shifthackz.joyreactor.network.parser.SectionsParser
 import com.shifthackz.joyreactor.network.qualifier.HttpInterceptors
 import com.shifthackz.joyreactor.network.qualifier.NetworkInterceptor
 import com.shifthackz.joyreactor.network.qualifier.NetworkInterceptors
@@ -22,6 +23,7 @@ private const val HTTP_TIMEOUT = 1L
 val networkModule = module {
     singleOf(::PostsParser)
     singleOf(::CommentsParser)
+    singleOf(::SectionsParser)
 
     single<Gson> { GsonBuilder().setLenient().create() }
 

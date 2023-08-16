@@ -12,6 +12,7 @@ enum class Route(val value: String) {
     HOME_DISCUSSED_ALL("home_discussed_all"),
     HOME_DISCUSSED_GOOD("home_discussed_good"),
     HOME_DISCUSSED_FLAME("home_discussed_flame"),
+    HOME_SECTION("home_section"),
     SLIDER("slider/{${Argument.POST_ID}}"),
     COMMENTS("comments/{${Argument.POST_ID}}");
 

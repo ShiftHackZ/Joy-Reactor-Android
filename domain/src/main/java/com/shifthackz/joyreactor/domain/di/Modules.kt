@@ -6,6 +6,8 @@ import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
 import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCaseImpl
 import com.shifthackz.joyreactor.domain.usecase.post.GetFullPostUseCase
 import com.shifthackz.joyreactor.domain.usecase.post.GetFullPostUseCaseImpl
+import com.shifthackz.joyreactor.domain.usecase.sections.FetchSectionsUseCase
+import com.shifthackz.joyreactor.domain.usecase.sections.FetchSectionsUseCaseImpl
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -14,4 +16,5 @@ val domainModule = module {
     factoryOf(::FetchPostsPageUseCaseImpl) bind FetchPostsPageUseCase::class
     factoryOf(::GetFullPostUseCaseImpl) bind GetFullPostUseCase::class
     factoryOf(::FetchPostCommentsUseCaseImpl) bind FetchPostCommentsUseCase::class
+    factoryOf(::FetchSectionsUseCaseImpl) bind FetchSectionsUseCase::class
 }

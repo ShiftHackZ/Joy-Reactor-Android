@@ -31,7 +31,7 @@ fun ChipComposable(
         ),
     ) {
         Text(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             text = text.asString(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
