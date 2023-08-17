@@ -3,11 +3,13 @@ package com.shifthackz.joyreactor.presentation.ui.screen.posts
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
 import com.shifthackz.joyreactor.presentation.mvi.MviViewModel
 import com.shifthackz.joyreactor.presentation.ui.paging.PostsPagingSource
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 
 class PostsViewModel(
@@ -31,5 +33,5 @@ class PostsViewModel(
         pagingSourceFactory = { PostsPagingSource(fetchPostsPageUseCase, url) },
     )
 
-    val pagingFlow: Flow<PagingData<PostsUI>> = pager.flow
+    val pagingFlow: Flow<PagingData<PostsUI>> = pager.flow.cachedIn(GlobalScope)
 }

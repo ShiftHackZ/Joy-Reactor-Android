@@ -1,25 +1,30 @@
 package com.shifthackz.joyreactor.presentation.ui.screen.section
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.shifthackz.joyreactor.domain.usecase.sections.FetchSectionsUseCase
+import com.shifthackz.joyreactor.domain.usecase.tags.SearchTagsUseCase
 import com.shifthackz.joyreactor.presentation.entity.asTextUi
 import com.shifthackz.joyreactor.presentation.mvi.MviStateViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SectionViewModel(
     private val fetchSectionsUseCase: FetchSectionsUseCase,
+    private val searchTagsUseCase: SearchTagsUseCase,
 ) : MviStateViewModel<SectionState>() {
 
     override val emptyState = SectionState.Loading
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch {
             fetchSectionsUseCase()
-                .let {
-                    it.fold(
-                        onSuccess = {
-                            SectionState.Content(it)
-                        },
+                .let { result ->
+                    result.fold(
+                        onSuccess = SectionState::Content,
                         onFailure = { t ->
                             SectionState.Error(t.message.toString().asTextUi())
                         }
@@ -28,4 +33,29 @@ class SectionViewModel(
                 .let(::setState)
         }
     }
+
+    fun onSearchQueryChanged(query: String) = (currentState as? SectionState.Content)
+        ?.copy(searchQuery = query)
+        ?.also(::setState)
+        ?.also { state ->
+            searchJob?.cancel()
+            if (state.searchQuery.isBlank()) {
+                state.copy(searchResults = listOf()).let(::setState)
+                return@also
+            }
+            searchJob = viewModelScope.launch {
+                delay(500L)
+                searchTagsUseCase(state.searchQuery).let { result ->
+                    result.fold(
+                        onSuccess = { tg ->
+                            Log.d("VM", "Search: $tg")
+                            state.copy(searchResults = tg).let(::setState)
+                        },
+                        onFailure = {
+                            it.printStackTrace()
+                        }
+                    )
+                }
+            }
+        }
 }

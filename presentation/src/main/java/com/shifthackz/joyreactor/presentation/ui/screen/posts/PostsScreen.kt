@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +19,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.shifthackz.joyreactor.presentation.extensions.rememberLazyListState
 import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
 import com.shifthackz.joyreactor.presentation.mvi.MviScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
@@ -56,6 +56,7 @@ private fun ScreenContent(
 ) {
     SetStatusBarColor()
     val lazyPosts = pagingFlow.collectAsLazyPagingItems()
+    val listState = lazyPosts.rememberLazyListState()
     val emptyStatePredicate: () -> Boolean = {
         lazyPosts.loadState.refresh is LoadState.NotLoading
                 && lazyPosts.itemCount == 0
@@ -72,7 +73,7 @@ private fun ScreenContent(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
-            state = rememberLazyListState(),
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(

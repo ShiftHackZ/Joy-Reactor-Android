@@ -15,6 +15,9 @@ interface TagDao {
     @Query("SELECT * FROM ${TagContract.TABLE} WHERE ${TagContract.NAME} = :name")
     suspend fun queryByName(name: String): TagEntity
 
+    @Query("SELECT * FROM ${TagContract.TABLE} WHERE ${TagContract.NAME} LIKE '%' || :query || '%'")
+    suspend fun search(query: String): List<TagEntity>
+
     @Upsert
     suspend fun upsert(item: TagEntity)
 

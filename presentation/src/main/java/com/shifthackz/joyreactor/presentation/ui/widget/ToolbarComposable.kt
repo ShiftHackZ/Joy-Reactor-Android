@@ -2,6 +2,7 @@
 
 package com.shifthackz.joyreactor.presentation.ui.widget
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,7 @@ fun ToolbarComposable(
     toolbarUI: ToolbarUI,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     navigateBack: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     if (toolbarUI.isEmpty) return
     TopAppBar(
@@ -44,6 +46,7 @@ fun ToolbarComposable(
                     )
                 }
             }
-        }
+        },
+        actions = actions,
     )
 }

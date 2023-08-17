@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="toolbar_title_tag">Tag: %1$s</string>
+    <string name="tag_search">Search tag…</string>
 
     <string name="home_tab_feed">Feed</string>
     <string name="home_tab_discussed">Discussed</string>
@@ -15,6 +16,7 @@
     <string name="discussed_tab_flame">Flame</string>
 
     <string name="comments_title">Comments</string>
+    <string name="share_title">Share JoyReactor post image</string>
 
     <string name="date_format_today">Today at %1$s</string>
     <string name="date_format_yesterday">Yesterday at %1$s</string>

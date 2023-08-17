@@ -2,8 +2,9 @@
 
 package com.shifthackz.joyreactor.presentation.ui.screen.slider
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -13,14 +14,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.drawable.toBitmap
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -39,6 +46,7 @@ import net.engawapg.lib.zoomable.zoomable
 fun ContentSliderScreen(
     modifier: Modifier = Modifier,
     post: Post,
+    shareImage: (Bitmap) -> Unit = {},
     navigateBack: () -> Unit = {},
 ) {
     BackHandler {
@@ -50,6 +58,25 @@ fun ContentSliderScreen(
 
     val bgColor = Color.Black
     val pagerState = rememberPagerState { media.size }
+    val images = remember { arrayOfNulls<Bitmap?>(media.size) }
+    val request: (Context, Int) -> ImageRequest = { ctx, index ->
+        ImageRequest.Builder(ctx)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .decoderFactory(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    (ImageDecoderDecoder.Factory())
+                } else {
+                    (GifDecoder.Factory())
+                }
+            )
+            .data(media[index].value)
+            .listener(onSuccess = { req, res ->
+                res.drawable.toBitmap().let {
+                    images[index] = it
+                }
+            })
+            .build()
+    }
     SetStatusBarColor(bgColor)
     Scaffold(
         modifier = modifier,
@@ -64,6 +91,21 @@ fun ContentSliderScreen(
                     navigationIconContentColor = Color.White,
                 ),
                 navigateBack = navigateBack,
+                actions = {
+                    IconButton(
+                        onClick = {
+                            images[pagerState.currentPage]?.let(shareImage)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = null,
+                            tint = Color.White/*.copy(
+                                alpha = images[pagerState.currentPage]?.let { 1.0f } ?: 0.5f,
+                            )*/,
+                        )
+                    }
+                }
             )
         },
         bottomBar = {
@@ -80,30 +122,18 @@ fun ContentSliderScreen(
             .padding(paddingValues)
             .fillMaxSize()
 
-
-        Log.d("DBG000", "MEDIA : $media")
         HorizontalPager(
             modifier = contentModifier,
             state = pagerState,
         ) { index ->
             val zoomState = rememberZoomState()
-            val request = ImageRequest.Builder(LocalContext.current)
-                .memoryCachePolicy(CachePolicy.ENABLED)
-                .decoderFactory(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        (ImageDecoderDecoder.Factory())
-                    } else {
-                        (GifDecoder.Factory())
-                    }
-                )
-                .data(media[index].value)
-                .build()
-
             Image(
                 modifier = Modifier
                     .fillMaxSize()
                     .zoomable(zoomState),
-                painter = rememberAsyncImagePainter(model = request),
+                painter = rememberAsyncImagePainter(
+                    model = request(LocalContext.current, index),
+                ),
                 contentDescription = null,
             )
         }

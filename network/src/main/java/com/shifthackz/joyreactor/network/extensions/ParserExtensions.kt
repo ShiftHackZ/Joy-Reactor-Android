@@ -15,3 +15,10 @@ fun String.baseUrl(): String {
     val locationUrl = URL(this)
     return locationUrl.protocol + "://" + locationUrl.host
 }
+
+fun String.initUrl(): String {
+    val cc  =(if (!this.startsWith("http")) "https://joyreactor.cc$this"
+    else this)
+
+    return cc.replace("#", "%23").replace(" ", "+")
+}

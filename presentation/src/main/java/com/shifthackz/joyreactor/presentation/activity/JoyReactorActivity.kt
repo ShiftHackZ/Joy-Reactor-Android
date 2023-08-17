@@ -23,6 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.shifthackz.joyreactor.entity.JoyReactorLink
 import com.shifthackz.joyreactor.entity.Post
+import com.shifthackz.joyreactor.presentation.R
+import com.shifthackz.joyreactor.presentation.extensions.save
+import com.shifthackz.joyreactor.presentation.extensions.shareFile
 import com.shifthackz.joyreactor.presentation.navigation.Argument
 import com.shifthackz.joyreactor.presentation.navigation.Route
 import com.shifthackz.joyreactor.presentation.navigation.decodeNavArg
@@ -32,6 +35,8 @@ import com.shifthackz.joyreactor.presentation.ui.screen.home.homeNavGraph
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
+import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsScreen
+import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsViewModel
 import com.shifthackz.joyreactor.presentation.ui.screen.webview.WebViewScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.JoyYouTheme
 import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
@@ -54,8 +59,9 @@ class JoyReactorActivity : ComponentActivity() {
                     val webViewSheetState = remember { mutableStateOf<String?>(null) }
                     val postsActionsListener = object : PostsActionsListener {
                         override val openPosts: (String) -> Unit = { url ->
+                            val route = if (url.endsWith("/rating")) Route.TAGS else Route.POSTS
                             navController.navigate(
-                                Route.build(Route.POSTS, mapOf(Argument.URL to url.encodeNavArg()))
+                                Route.build(route, mapOf(Argument.URL to url.encodeNavArg()))
                             )
                         }
                         override val openSlider: (Post) -> Unit = { post ->
@@ -104,7 +110,7 @@ class JoyReactorActivity : ComponentActivity() {
 
                                 PostsScreen(
                                     viewModel = koinViewModel(
-                                        parameters = { parametersOf(url) },
+                                        parameters = { parametersOf(url.decodeNavArg()) },
                                     ),
                                     navigateBack = navigateBack,
                                     postsActionsListener = postsActionsListener,
@@ -124,6 +130,28 @@ class JoyReactorActivity : ComponentActivity() {
                                     ),
                                     navigateBack = navigateBack,
                                 ).Build()
+                            }
+
+                            composable(
+                                route = Route.TAGS.value,
+                                arguments = listOf(
+                                    navArgument(Argument.URL) { type = NavType.StringType },
+                                ),
+                            ) { entry ->
+                                val url = entry.arguments
+                                    ?.getString(Argument.URL)
+                                    ?.let(String::decodeNavArg)
+                                    ?: JoyReactorLink.HOME_NEW.url
+
+                                val viewModel = koinViewModel<TagsViewModel>(
+                                    parameters = { parametersOf(url) }
+                                )
+
+                                TagsScreen(
+                                    pagingFlow = viewModel.pagingFlow,
+                                    navigateBack = navigateBack,
+                                    postsActionsListener = postsActionsListener,
+                                )
                             }
                         }
                         AnimatedVisibility(
@@ -159,6 +187,14 @@ class JoyReactorActivity : ComponentActivity() {
                                     navigateBack = {
                                         sliderScreenState.value = null
                                     },
+                                    shareImage = { bmp ->
+                                        shareFile(
+                                            bmp.save(this@JoyReactorActivity),
+                                            "${this@JoyReactorActivity.packageName}.fileprovider",
+                                            "image/jpeg",
+                                            this@JoyReactorActivity.getString(R.string.share_title),
+                                        )
+                                    }
                                 )
                             }
                         }

@@ -25,6 +25,7 @@ class SectionsParser {
                     if (lis[j].attr("id").isNotBlank()) continue
                     val name = lis[j].attr("class")
                     val link = lis[j].select("a")[0].attr("href").formatSectionUrl()
+                    Log.d("DBG00", "ln = $link")
 //                    lis[j].select("a")[0].
                     val img = lis[j].select("a")[0].cssSelector()
                     val imgCssSel = img.split(" > ").takeLast(2).joinToString(" ")//.split(" ")[0]

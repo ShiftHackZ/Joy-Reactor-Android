@@ -2,10 +2,14 @@ package com.shifthackz.joyreactor.network.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.shifthackz.joyreactor.network.Api
+import com.shifthackz.joyreactor.network.ApiImpl
+import com.shifthackz.joyreactor.network.extensions.withBaseUrl
 import com.shifthackz.joyreactor.network.interceptor.LoggingInterceptor
 import com.shifthackz.joyreactor.network.parser.CommentsParser
 import com.shifthackz.joyreactor.network.parser.PostsParser
 import com.shifthackz.joyreactor.network.parser.SectionsParser
+import com.shifthackz.joyreactor.network.parser.TagsParser
 import com.shifthackz.joyreactor.network.qualifier.HttpInterceptors
 import com.shifthackz.joyreactor.network.qualifier.NetworkInterceptor
 import com.shifthackz.joyreactor.network.qualifier.NetworkInterceptors
@@ -24,6 +28,7 @@ val networkModule = module {
     singleOf(::PostsParser)
     singleOf(::CommentsParser)
     singleOf(::SectionsParser)
+    singleOf(::TagsParser)
 
     single<Gson> { GsonBuilder().setLenient().create() }
 
@@ -82,6 +87,12 @@ val networkModule = module {
             .client(get())
     }
 
+    single<Api> {
+        get<Retrofit.Builder>()
+            .withBaseUrl("https://joyreactor.cc")
+            .create(Api::class.java)
+    }
+    singleOf(::ApiImpl)
 
 }
 

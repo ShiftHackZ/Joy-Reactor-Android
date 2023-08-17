@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.shifthackz.joyreactor.entity.Section
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
+import com.shifthackz.joyreactor.presentation.ui.theme.LightGray
 
 @Composable
 fun SectionComposable(
@@ -60,6 +61,7 @@ fun SectionComposable(
                 text = section.name,
                 fontWeight = FontWeight.W700,
                 fontSize = 20.sp,
+                color = LightGray,
             )
         }
     }

@@ -12,10 +12,13 @@ class PostsRepositoryImpl(
 ) : PostsRepository {
 
     override suspend fun fetchPage(url: String): Result<PagePayload<Post>> = coroutineScope {
-        return@coroutineScope postsRds.fetchPage(url).getOrNull()?.let {
-            postsLds.savePosts(it.data)
-            Result.success(it)
-        } ?: Result.failure(IllegalStateException())
+        postsRds.fetchPage(url).fold(
+            onSuccess = {
+                postsLds.savePosts(it.data)
+                Result.success(it)
+            },
+            onFailure = { Result.failure(it) },
+        )
     }
 
     override suspend fun getPost(id: String): Result<Post> {

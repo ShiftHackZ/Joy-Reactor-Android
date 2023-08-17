@@ -10,6 +10,7 @@ import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.entity.Tag
 import com.shifthackz.joyreactor.network.extensions.baseUrl
 import com.shifthackz.joyreactor.network.extensions.formatImageUrl
+import com.shifthackz.joyreactor.network.extensions.initUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -21,11 +22,14 @@ class PostsParser {
     private var last: String? = null
 
     suspend fun fetchPage(url: String): Result<PagePayload<Post>> = withContext(Dispatchers.IO) {
+        Log.d("PostsParser", "URL: $url")
+        Log.d("PostsParser", "URL: ${url.initUrl()}")
         try {
             val posts = mutableListOf<Post>()
 //            val doc = Jsoup.connect(url).get()
-            val doc = Jsoup.newSession()
-                .url(url)
+            val doc = Jsoup
+                .newSession()
+                .url(url.initUrl())
 //                .followRedirects(false)
                 .apply {
                     last?.let {
@@ -35,9 +39,15 @@ class PostsParser {
                         headers(map) }
                 }
                 .get()
+//            val rsp = api.getThe(url.initUrl())
+//
+//            val body = rsp.body()?.string() ?: ""
+//
+//            val doc = Jsoup.parse(body)
 
             val location = doc.location()
             val baseUrl = location.baseUrl()
+//            val baseUrl = rsp.headers().get("Location")?.baseUrl() ?: ""
 
             val postContainers = doc.select(".postContainer")
             for (i in 0 until postContainers.size) {
@@ -72,7 +82,7 @@ class PostsParser {
 
                 for (j in 0 until tagsContainer.size) {
                     val tagItem = tagsContainer[j]
-                    val tag = Tag(tagItem.attr("title"), tagItem.attr("href"))
+                    val tag = Tag(tagItem.attr("title"), tagItem.attr("href"), "")
                     tags.add(tag)
                 }
                 for (j in 0 until contentContainer.size) {
@@ -124,28 +134,18 @@ class PostsParser {
                     posts.add(post)
                 }
             }
-            var next = doc.select("a.next").attr("href")
-//            val badNext = url.contains(next)
-//            if (badNext) {
-//                val num = url.split("/").lastOrNull()?.toIntOrNull()?.let {
-//                    val cc = next.replace("$it", "") + "${it - 1}"
-//                    next = cc
-//                }
-//            }
+            val next = doc.select("a.next").attr("href")
             val prev = doc.select("a.prev").attr("href")
-            Log.d("DBGN", "LOCATION: $location")
-            Log.d("DBGN", "[$url] prev = $prev ||| next = $next")
             val payload = PagePayload(
                 data = posts,
                 next = next.takeIf { it.isNotEmpty() }?.let { "$baseUrl$it" },
                 prev = prev.takeIf { it.isNotEmpty() }?.let { "$baseUrl$it" },
-//                prev = prev.takeIf { it.isNotEmpty() }?.let { url },
             )
             last = url
             Result.success(payload)
         } catch (e: Exception) {
+            e.printStackTrace()
             Result.failure(e)
         }
     }
-
 }

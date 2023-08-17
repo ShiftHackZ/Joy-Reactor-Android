@@ -5,4 +5,5 @@ object TagContract {
 
     const val NAME = "name"
     const val URL = "url"
+    const val IMAGE_URL = "image_url"
 }

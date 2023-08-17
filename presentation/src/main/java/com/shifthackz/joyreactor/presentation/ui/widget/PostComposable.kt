@@ -484,7 +484,7 @@ private fun PreviewPostContent(@PreviewParameter(LoremIpsum::class) lorem: Strin
             ),
             tags = listOf(
                 Tag(
-                    name = "tag", url = "",
+                    name = "tag", url = "", imageUrl = "",
                 ),
             ),
             rating = 0.0,

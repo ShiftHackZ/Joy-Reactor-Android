@@ -12,4 +12,6 @@ data class TagEntity(
     val name: String,
     @ColumnInfo(name = TagContract.URL)
     val url: String,
+    @ColumnInfo(name = TagContract.IMAGE_URL)
+    val imageUrl: String
 )
