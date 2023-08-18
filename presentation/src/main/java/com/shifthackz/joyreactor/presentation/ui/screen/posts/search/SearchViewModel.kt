@@ -1,24 +1,21 @@
-package com.shifthackz.joyreactor.presentation.ui.screen.posts
+package com.shifthackz.joyreactor.presentation.ui.screen.posts.search
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
-import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
 import com.shifthackz.joyreactor.presentation.mvi.MviStateViewModel
 import com.shifthackz.joyreactor.presentation.ui.paging.PostsPagingSource
+import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsUI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 
-class PostsViewModel(
-    private val url: String,
+class SearchViewModel(
     private val fetchPostsPageUseCase: FetchPostsPageUseCase,
-) : MviStateViewModel<PostsState>() {
+) : MviStateViewModel<SearchState>() {
 
-    override val emptyState = PostsState(
-        toolbarUI = ToolbarUI.fromUrl(url)
-    )
+    override val emptyState = SearchState()
 
     private val config = PagingConfig(
         pageSize = 10,
@@ -28,9 +25,15 @@ class PostsViewModel(
 
     private val pager: Pager<String, PostsUI> = Pager(
         config = config,
-        initialKey = url,
-        pagingSourceFactory = { PostsPagingSource(fetchPostsPageUseCase) { url } },
+        initialKey = "https://joyreactor.cc/search?q=",
+        pagingSourceFactory = { PostsPagingSource(fetchPostsPageUseCase) {
+            "https://joyreactor.cc/search?q=${currentState.searchQuery}"
+        } },
     )
 
     val pagingFlow: Flow<PagingData<PostsUI>> = pager.flow.cachedIn(GlobalScope)
+
+    fun onSearchQueryChanged(query: String) = currentState
+        .copy(searchQuery = query)
+        .also(::setState)
 }

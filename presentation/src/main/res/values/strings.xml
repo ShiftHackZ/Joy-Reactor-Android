@@ -2,6 +2,8 @@
 <resources>
     <string name="toolbar_title_tag">Tag: %1$s</string>
     <string name="tag_search">Search tag…</string>
+    <string name="tag_search_empty">No tags found</string>
+    <string name="post_search">Search posts…</string>
 
     <string name="home_tab_feed">Feed</string>
     <string name="home_tab_discussed">Discussed</string>

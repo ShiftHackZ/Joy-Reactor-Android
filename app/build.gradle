@@ -46,6 +46,7 @@ dependencies {
     implementation project(":storage")
     implementation di.koinCore
     implementation di.koinAndroid
+    implementation androidx.splash
 }
 
 // Workaround for "Bug: baseline.profm not deterministic"

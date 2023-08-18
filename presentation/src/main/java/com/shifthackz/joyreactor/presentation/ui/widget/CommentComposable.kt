@@ -61,7 +61,7 @@ fun CommentComposable(
         )
         commentUi.children.forEach {
             CommentComposable(
-                modifier = Modifier.padding(start = imageSize),
+                modifier = Modifier.padding(start = imageSize / 2),
                 commentUi = it,
             )
         }

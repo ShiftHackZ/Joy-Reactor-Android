@@ -1,12 +1,12 @@
 package com.shifthackz.joyreactor.presentation.ui.screen.tags
 
-import androidx.lifecycle.ViewModel
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.shifthackz.joyreactor.domain.usecase.tags.FetchTagsUseCase
 import com.shifthackz.joyreactor.entity.Tag
+import com.shifthackz.joyreactor.presentation.mvi.MviStateViewModel
 import com.shifthackz.joyreactor.presentation.ui.paging.TagsPagingSource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 class TagsViewModel(
     private val url: String,
     private val fetchTagsUseCase: FetchTagsUseCase,
-) : ViewModel() {
+) : MviStateViewModel<TagsState>() {
 
 
     private val config = PagingConfig(
@@ -23,12 +23,22 @@ class TagsViewModel(
         enablePlaceholders = false,
     )
 
-    private val pager: Pager<String, Tag> = Pager(
-        config = config,
-        initialKey = url,
-        pagingSourceFactory = { TagsPagingSource(fetchTagsUseCase, url) },
-    )
+    private val pagers: List<Pager<String, Tag>>
 
-    val pagingFlow: Flow<PagingData<Tag>> = pager.flow.cachedIn(GlobalScope)
+    val pagingFlows: List<Flow<PagingData<Tag>>>
 
+    override val emptyState = TagsState(url)
+
+    init {
+        TagsState(url).run {
+            pagers = links.map { link ->
+                Pager(
+                    config = config,
+                    initialKey = link.url,
+                    pagingSourceFactory = { TagsPagingSource(fetchTagsUseCase, link.url) },
+                )
+            }
+            pagingFlows =  pagers.map { it.flow.cachedIn(GlobalScope) }
+        }
+    }
 }

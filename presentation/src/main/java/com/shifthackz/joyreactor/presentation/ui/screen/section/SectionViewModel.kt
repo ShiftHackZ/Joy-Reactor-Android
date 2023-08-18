@@ -35,12 +35,12 @@ class SectionViewModel(
     }
 
     fun onSearchQueryChanged(query: String) = (currentState as? SectionState.Content)
-        ?.copy(searchQuery = query)
+        ?.copy(searchQuery = query, searchRunning = true)
         ?.also(::setState)
         ?.also { state ->
             searchJob?.cancel()
             if (state.searchQuery.isBlank()) {
-                state.copy(searchResults = listOf()).let(::setState)
+                state.copy(searchResults = listOf(), searchRunning = false).let(::setState)
                 return@also
             }
             searchJob = viewModelScope.launch {
@@ -49,9 +49,10 @@ class SectionViewModel(
                     result.fold(
                         onSuccess = { tg ->
                             Log.d("VM", "Search: $tg")
-                            state.copy(searchResults = tg).let(::setState)
+                            state.copy(searchResults = tg, searchRunning = false).let(::setState)
                         },
                         onFailure = {
+                            state.copy(searchRunning = false).let(::setState)
                             it.printStackTrace()
                         }
                     )

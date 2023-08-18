@@ -11,6 +11,7 @@ import androidx.navigation.get
 import com.shifthackz.joyreactor.presentation.R
 import com.shifthackz.joyreactor.presentation.entity.asTextUi
 import com.shifthackz.joyreactor.presentation.navigation.Route
+import com.shifthackz.joyreactor.presentation.ui.screen.feed.FeedNavItem
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.FeedNavScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.discussedAllTab
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.discussedFlameTab
@@ -18,6 +19,7 @@ import com.shifthackz.joyreactor.presentation.ui.screen.feed.discussedGoodTab
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.feedBestTab
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.feedGoodTab
 import com.shifthackz.joyreactor.presentation.ui.screen.feed.feedNewTab
+import com.shifthackz.joyreactor.presentation.ui.screen.feed.feedSearchTap
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
 import com.shifthackz.joyreactor.presentation.ui.screen.section.SectionScreen
 import org.koin.androidx.compose.koinViewModel
@@ -51,6 +53,8 @@ private fun feedTab(postsActionsListener: PostsActionsListener) = HomeNavItem(
                 feedNewTab(postsActionsListener),
                 feedGoodTab(postsActionsListener),
                 feedBestTab(postsActionsListener),
+                FeedNavItem(Route.UNKNOWN),
+                feedSearchTap(postsActionsListener),
             ),
         )
     }

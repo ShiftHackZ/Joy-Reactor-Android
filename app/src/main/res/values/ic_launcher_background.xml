@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FDB201</color>
+    <color name="ic_launcher_background">@color/splash_background</color>
 </resources>

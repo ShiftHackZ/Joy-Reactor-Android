@@ -38,6 +38,7 @@ dependencies {
     implementation androidx.composeActivity
     implementation androidx.composeViewModel
     implementation androidx.composeNavigation
+    implementation androidx.composeMaterial
     implementation androidx.pagingRuntime
     implementation androidx.pagingCompose
     implementation androidx.palette

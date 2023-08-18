@@ -2,6 +2,7 @@ package com.shifthackz.joyreactor.presentation.di
 
 import com.shifthackz.joyreactor.presentation.ui.screen.comments.CommentsViewModel
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsViewModel
+import com.shifthackz.joyreactor.presentation.ui.screen.posts.search.SearchViewModel
 import com.shifthackz.joyreactor.presentation.ui.screen.section.SectionViewModel
 import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,6 +19,7 @@ val viewModelModule = module {
     }
 
     viewModelOf(::SectionViewModel)
+    viewModelOf(::SearchViewModel)
 
     viewModel {
         TagsViewModel(it.get(), get())

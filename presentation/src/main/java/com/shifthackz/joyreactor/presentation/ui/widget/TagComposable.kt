@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -24,14 +25,14 @@ import com.shifthackz.joyreactor.entity.Tag
 
 private val imageSize = 40.dp
 private val offset = imageSize + 6.dp
+private val shape = RoundedCornerShape(4.dp)
 
 @Composable
 fun TagComposable(
     modifier: Modifier = Modifier,
     tag: Tag,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
-    val shape = RoundedCornerShape(4.dp)
     Box(
         modifier = modifier
             .padding(horizontal = 8.dp)
@@ -64,4 +65,32 @@ fun TagComposable(
             )
         }
     }
+}
+
+@Composable
+fun TagShimmer(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+            .fillMaxSize()
+            .height(imageSize + 8.dp)
+            .shimmer(shape)
+    )
+}
+
+@Composable
+@Preview
+private fun PreviewContent() {
+    TagComposable(
+        modifier = Modifier.height(48.dp),
+        tag = Tag("Tag", "", ""),
+    )
+}
+
+@Composable
+@Preview
+private fun PreviewShimmer() {
+    TagShimmer(
+        modifier = Modifier.height(48.dp),
+    )
 }

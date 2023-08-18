@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -25,13 +27,14 @@ import com.shifthackz.joyreactor.entity.Section
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
 import com.shifthackz.joyreactor.presentation.ui.theme.LightGray
 
+private val shape = RoundedCornerShape(6.dp)
+
 @Composable
 fun SectionComposable(
     modifier: Modifier = Modifier,
     section: Section,
     listener: PostsActionsListener = PostsActionsListener.empty,
 ) {
-    val shape = RoundedCornerShape(6.dp)
     Box(
         modifier = modifier
             .padding(8.dp)
@@ -65,4 +68,51 @@ fun SectionComposable(
             )
         }
     }
+}
+
+@Composable
+fun SessionShimmer(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(8.dp)
+            .fillMaxSize()
+            .height(110.dp)
+            .shimmer(shape)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(Color(0x55000000))
+                .defaultMinSize(minHeight = 110.dp)
+                .fillMaxWidth(0.31f)
+                .align(Alignment.CenterEnd),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 70.dp, height = 20.dp)
+                    .align(Alignment.Center)
+                    .shimmer(),
+            )
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewContent() {
+    SectionComposable(
+        modifier = Modifier.height(110.dp),
+        section = Section(
+            "Section",
+            "http://",
+            ""
+        )
+    )
+}
+
+@Composable
+@Preview
+private fun PreviewShimmer() {
+    SessionShimmer(
+        modifier = Modifier.height(110.dp),
+    )
 }

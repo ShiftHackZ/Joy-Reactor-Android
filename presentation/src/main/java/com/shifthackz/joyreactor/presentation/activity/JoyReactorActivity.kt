@@ -36,7 +36,6 @@ import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListen
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsScreen
-import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsViewModel
 import com.shifthackz.joyreactor.presentation.ui.screen.webview.WebViewScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.JoyYouTheme
 import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
@@ -47,6 +46,7 @@ class JoyReactorActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        actionBar?.hide()
         setContent {
             val navController = rememberNavController()
             val navigateBack: () -> Unit = { navController.navigateUp() }
@@ -143,15 +143,13 @@ class JoyReactorActivity : ComponentActivity() {
                                     ?.let(String::decodeNavArg)
                                     ?: JoyReactorLink.HOME_NEW.url
 
-                                val viewModel = koinViewModel<TagsViewModel>(
-                                    parameters = { parametersOf(url) }
-                                )
-
                                 TagsScreen(
-                                    pagingFlow = viewModel.pagingFlow,
+                                    viewModel = koinViewModel(
+                                        parameters = { parametersOf(url) }
+                                    ),
                                     navigateBack = navigateBack,
                                     postsActionsListener = postsActionsListener,
-                                )
+                                ).Build()
                             }
                         }
                         AnimatedVisibility(

@@ -13,6 +13,7 @@ sealed interface SectionState : MviState {
     data class Content(
         val sections: List<Section>,
         val searchActive: Boolean = false,
+        val searchRunning: Boolean = false,
         val searchQuery: String = "",
         val searchResults: List<Tag> = emptyList(),
     ) : SectionState

@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
@@ -66,6 +68,7 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.google.android.exoplayer2.ExoPlayer
@@ -143,7 +146,7 @@ fun PostComposable(
             when (it.key) {
                 Content.Type.MEDIA -> Column {
                     val pagerState = rememberPagerState { it.value.size }
-                    val minHeightState = remember { mutableStateOf(0.001.dp) }
+                    val minHeightState = remember { mutableStateOf(300.dp) }
                     HorizontalPager(
                         modifier = Modifier
                             .clickable { postsActionsListener.openSlider(post) }
@@ -288,30 +291,75 @@ fun RenderPostContent(
                     .build()
 
                 val ctx = LocalContext.current
-                LaunchedEffect(Unit) { ImageLoader(ctx).enqueue(request) }
+                val lambda: () -> Unit = {
+                    ImageLoader.Builder(ctx)
+                        .memoryCache(
+                            MemoryCache.Builder(ctx)
+                                .maxSizePercent(0.0)
+                                .build()
+                        )
+                        .build()
+                        .enqueue(request)
+                }
+                LaunchedEffect(Unit) { lambda()  }
+                val isLoading = remember { mutableStateOf(true) }
+                val isError = remember { mutableStateOf(false) }
 
-                AsyncImage(
-                    modifier = modifier.fillMaxWidth(),
-                    model = request,
-                    contentScale = ContentScale.FillWidth,
-                    contentDescription = null,
-                    onState = { state ->
-                        when (state) {
-                            is AsyncImagePainter.State.Success -> {
-                                val drawable = state.result.drawable
-                                drawableState.value = drawable
-                                with(localDensity) {
-                                    drawable
-                                        .intrinsicHeight
-                                        .toDp()
-                                        .let(onHeight)
+                Box {
+                    AsyncImage(
+                        modifier = modifier
+                            .alpha(if (isLoading.value || isError.value) 0f else 1f)
+                            .fillMaxWidth(),
+                        model = request,
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null,
+                        onState = { state ->
+                            when (state) {
+                                is AsyncImagePainter.State.Loading -> {
+                                    isLoading.value = true
+                                    isError.value = false
                                 }
-                            }
 
-                            else -> Unit
+                                is AsyncImagePainter.State.Success -> {
+                                    isLoading.value = false
+                                    isError.value = false
+                                    val drawable = state.result.drawable
+                                    drawableState.value = drawable
+                                    with(localDensity) {
+                                        drawable
+                                            .intrinsicHeight
+                                            .toDp()
+                                            .let(onHeight)
+                                    }
+                                }
+
+                                is AsyncImagePainter.State.Error -> {
+                                    isLoading.value = false
+                                    isError.value = true
+                                }
+
+                                else -> Unit
+                            }
+                        }
+                    )
+                    if (isLoading.value) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .shimmer()
+                        )
+                    }
+                    if (isError.value) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Text("Error loading content")
+                            Button(onClick = {
+                                lambda()
+                            }) {
+                                Text("Retry")
+                            }
                         }
                     }
-                )
+                }
             }
         }
 

@@ -10,7 +10,7 @@ import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsUI
 
 class PostsPagingSource(
     private val fetchPostsPageUseCase: FetchPostsPageUseCase,
-    private val firstKey: String = JoyReactorLink.HOME_NEW.url,
+    private val firstKey: () -> String = { JoyReactorLink.HOME_NEW.url },
 ) : PagingSource<String, PostsUI>() {
 
     override val keyReuseSupported: Boolean = true
@@ -24,11 +24,11 @@ class PostsPagingSource(
     }
 
     override fun getRefreshKey(state: PagingState<String, PostsUI>): String {
-        return firstKey
+        return firstKey()
     }
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, PostsUI> {
-        val key = params.key ?: firstKey
+        val key = params.key ?: firstKey()
         return fetchPostsPageUseCase(key).let { result ->
             result.fold(
                 onSuccess = { page ->

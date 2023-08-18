@@ -22,15 +22,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
+import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.shifthackz.joyreactor.entity.Content
@@ -127,12 +130,25 @@ fun ContentSliderScreen(
             state = pagerState,
         ) { index ->
             val zoomState = rememberZoomState()
+            val ctx = LocalContext.current
+            val imgRequest = request(ctx, index)
+
+            LaunchedEffect(Unit) {
+                ImageLoader.Builder(ctx)
+                    .memoryCache(
+                        MemoryCache.Builder(ctx)
+                            .maxSizePercent(0.0)
+                            .build()
+                    )
+                    .build()
+                    .enqueue(imgRequest)
+            }
             Image(
                 modifier = Modifier
                     .fillMaxSize()
                     .zoomable(zoomState),
                 painter = rememberAsyncImagePainter(
-                    model = request(LocalContext.current, index),
+                    model = imgRequest,
                 ),
                 contentDescription = null,
             )
