@@ -19,10 +19,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
 import com.shifthackz.joyreactor.presentation.entity.asString
+import com.shifthackz.joyreactor.presentation.ui.theme.colors
 
 @Composable
 fun RootToolbarComposable(
@@ -30,7 +32,7 @@ fun RootToolbarComposable(
     launchSettings: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier.padding(all = 8.dp),
+        modifier = modifier.padding(all = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         JoyReactorComposable()
@@ -39,6 +41,7 @@ fun RootToolbarComposable(
             androidx.compose.material.Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = null,
+                tint = colors(light = Color.Black, dark = Color.White),
             )
         }
     }
