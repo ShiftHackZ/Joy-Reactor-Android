@@ -56,6 +56,7 @@ private fun feedTab(postsActionsListener: PostsActionsListener) = HomeNavItem(
                 FeedNavItem(Route.UNKNOWN),
                 feedSearchTap(postsActionsListener),
             ),
+            launchSettings = postsActionsListener.openSettings,
         )
     }
 )
@@ -71,7 +72,8 @@ private fun discussedTab(postsActionsListener: PostsActionsListener) = HomeNavIt
                 discussedAllTab(postsActionsListener),
                 discussedGoodTab(postsActionsListener),
                 discussedFlameTab(postsActionsListener),
-            )
+            ),
+            launchSettings = postsActionsListener.openSettings,
         )
     }
 )

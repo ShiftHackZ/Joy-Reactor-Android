@@ -12,4 +12,5 @@ android {
 dependencies {
     api project(":entity")
     implementation di.koinCore
+    implementation org.coroutines
 }

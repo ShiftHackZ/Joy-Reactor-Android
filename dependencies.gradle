@@ -25,6 +25,7 @@ ext {
     accompanistSystemUiControllerVersion = '0.30.1'
     zoomableVersion = '1.5.0'
     splashVersion = '1.0.1'
+    dataStoreVersion = '1.0.0'
 
     testJunitVersion = '4.13.2'
 
@@ -49,6 +50,7 @@ ext {
             pagingCompose               : "androidx.paging:paging-compose:$pagingComposeVersion",
             palette                     : "androidx.palette:palette:$paletteVersion",
             splash                      : "androidx.core:core-splashscreen:$splashVersion",
+            datastore                   : "androidx.datastore:datastore-preferences:$dataStoreVersion",
     ]
     google = [
             gson                         : "com.google.code.gson:gson:$gsonVersion",

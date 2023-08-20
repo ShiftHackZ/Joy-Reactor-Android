@@ -2,7 +2,6 @@ package com.shifthackz.joyreactor.presentation.ui.screen.feed
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shifthackz.joyreactor.presentation.navigation.Route
 import com.shifthackz.joyreactor.presentation.ui.widget.ChipComposable
-import com.shifthackz.joyreactor.presentation.ui.widget.JoyReactorComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.NestedNavComposable
+import com.shifthackz.joyreactor.presentation.ui.widget.RootToolbarComposable
 
 @Composable
 fun FeedNavScreen(
     modifier: Modifier = Modifier,
     navItems: List<FeedNavItem>,
+    launchSettings: () -> Unit = {},
 ) {
     NestedNavComposable(
         modifier = modifier,
@@ -27,9 +27,7 @@ fun FeedNavScreen(
         topBar = { backStackEntry, navigate ->
             val currentRoute = backStackEntry.value?.destination?.route
             Column {
-                Box(modifier = Modifier.padding(all = 8.dp)) {
-                    JoyReactorComposable()
-                }
+                RootToolbarComposable(launchSettings = launchSettings)
                 Row(
                     modifier = Modifier.padding(all = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -20,15 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.shifthackz.joyreactor.presentation.extensions.rememberLazyListState
-import com.shifthackz.joyreactor.presentation.mvi.EmptyEffect
-import com.shifthackz.joyreactor.presentation.mvi.MviScreen
+import com.shifthackz.joyreactor.presentation.mvi.MviStateScreen
 import com.shifthackz.joyreactor.presentation.ui.theme.SetStatusBarColor
+import com.shifthackz.joyreactor.presentation.ui.widget.OnLifecycleEvent
 import com.shifthackz.joyreactor.presentation.ui.widget.PostComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.PostShimmer
 import com.shifthackz.joyreactor.presentation.ui.widget.ToolbarComposable
@@ -37,14 +38,25 @@ class PostsScreen(
     private val viewModel: PostsViewModel,
     private val navigateBack: () -> Unit = {},
     private val postsActionsListener: PostsActionsListener,
-) : MviScreen<PostsState, EmptyEffect>(viewModel) {
+) : MviStateScreen<PostsState>(viewModel) {
 
     @Composable
     override fun Content() {
+        val posts = viewModel.pagingFlow.collectAsLazyPagingItems()
+        val state = viewModel.state.collectAsStateWithLifecycle().value
+        OnLifecycleEvent { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> if (state.shouldRefresh) {
+                    posts.refresh()
+                    viewModel.refreshComplete()
+                }
+                else -> Unit
+            }
+        }
         PostsScreenContent(
             modifier = Modifier.fillMaxSize(),
-            state = viewModel.state.collectAsStateWithLifecycle().value,
-            lazyPosts = viewModel.pagingFlow.collectAsLazyPagingItems(),
+            state = state,
+            lazyPosts = posts,
             navigateBack = navigateBack,
             postsActionsListener = postsActionsListener,
         )

@@ -34,6 +34,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.shifthackz.joyreactor.entity.Nsfw
 import com.shifthackz.joyreactor.entity.Tag
 import com.shifthackz.joyreactor.presentation.R
 import com.shifthackz.joyreactor.presentation.entity.ToolbarUI
@@ -69,7 +70,7 @@ class TagsScreen(
 @Composable
 fun ScreenContent(
     modifier: Modifier = Modifier,
-    pagingFlows: List<Flow<PagingData<Tag>>>,
+    pagingFlows: List<Flow<PagingData<Nsfw<Tag>>>>,
     state: TagsState,
     postsActionsListener: PostsActionsListener = PostsActionsListener.empty,
     navigateBack: () -> Unit = {},
@@ -127,7 +128,7 @@ fun ScreenContent(
                         items = lazyTags,
                         key = { tag -> System.currentTimeMillis() + tag.hashCode() },
                     ) { tag ->
-                        tag?.let {
+                        (tag as? Nsfw.Safe<Tag>)?.data?.let {
                             TagComposable(
                                 modifier = Modifier.fillMaxWidth(),
                                 tag = it,

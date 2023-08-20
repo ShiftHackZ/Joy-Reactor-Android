@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.shifthackz.joyreactor.domain.usecase.tags.FetchTagsUseCase
+import com.shifthackz.joyreactor.entity.Nsfw
 import com.shifthackz.joyreactor.entity.Tag
 import com.shifthackz.joyreactor.presentation.mvi.MviStateViewModel
 import com.shifthackz.joyreactor.presentation.ui.paging.TagsPagingSource
@@ -23,9 +24,9 @@ class TagsViewModel(
         enablePlaceholders = false,
     )
 
-    private val pagers: List<Pager<String, Tag>>
+    private val pagers: List<Pager<String, Nsfw<Tag>>>
 
-    val pagingFlows: List<Flow<PagingData<Tag>>>
+    val pagingFlows: List<Flow<PagingData<Nsfw<Tag>>>>
 
     override val emptyState = TagsState(url)
 

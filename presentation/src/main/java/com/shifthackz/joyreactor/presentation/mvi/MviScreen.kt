@@ -8,7 +8,7 @@ abstract class MviScreen<S: MviState, E: MviEffect>(
 ) {
 
     @Composable
-    fun Build() {
+    open fun Build() {
         LaunchedEffect(KEY_EFFECTS_PROCESSOR) {
             viewModel.effectStream.collect(::processEffect)
         }
