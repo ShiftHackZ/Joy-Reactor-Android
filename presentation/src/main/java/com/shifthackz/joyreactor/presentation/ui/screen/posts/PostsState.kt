@@ -5,4 +5,5 @@ import com.shifthackz.joyreactor.presentation.mvi.MviState
 
 data class PostsState(
     val toolbarUI: ToolbarUI = ToolbarUI(),
+    val shouldRefresh: Boolean = false,
 ): MviState

@@ -15,5 +15,7 @@ dependencies {
     implementation project(":network")
     implementation project(":storage")
     implementation di.koinCore
+    implementation di.koinAndroid
     implementation org.coroutines
+    implementation androidx.datastore
 }

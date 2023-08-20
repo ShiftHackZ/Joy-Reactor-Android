@@ -36,12 +36,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.shifthackz.joyreactor.entity.Nsfw
 import com.shifthackz.joyreactor.entity.Section
 import com.shifthackz.joyreactor.entity.Tag
 import com.shifthackz.joyreactor.presentation.R
 import com.shifthackz.joyreactor.presentation.mvi.MviStateScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
-import com.shifthackz.joyreactor.presentation.ui.widget.JoyReactorComposable
+import com.shifthackz.joyreactor.presentation.ui.widget.RootToolbarComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.SectionComposable
 import com.shifthackz.joyreactor.presentation.ui.widget.SessionShimmer
 import com.shifthackz.joyreactor.presentation.ui.widget.shimmer
@@ -71,9 +72,7 @@ private fun ScreenContent(
     Scaffold(
         modifier = modifier,
         topBar = {
-            Box(modifier = Modifier.padding(all = 8.dp)) {
-                JoyReactorComposable()
-            }
+            RootToolbarComposable(launchSettings = listener.openSettings)
         }
     ) { paddingValues ->
         when (state) {
@@ -155,11 +154,17 @@ private fun ScreenContent(
                                 }
                             }
                         }
-                        else -> state.sections.forEach {
-                            SectionComposable(
-                                section = it,
-                                listener = listener,
-                            )
+
+                        else -> {
+                            state.sections
+                                .filterIsInstance<Nsfw.Safe<Section>>()
+                                .map { nsfw -> nsfw.data }
+                                .forEach {
+                                    SectionComposable(
+                                        section = it,
+                                        listener = listener,
+                                    )
+                                }
                         }
                     }
 
@@ -179,6 +184,7 @@ private fun ScreenContent(
                 Box(modifier = Modifier.height(10.dp))
                 repeat(5) { SessionShimmer(Modifier.height(110.dp)) }
             }
+            SectionState.Uninitialized -> Unit
         }
     }
 }
@@ -200,7 +206,7 @@ private fun PreviewStateContentSections() {
                 Section("Section", "", ""),
                 Section("Section", "", ""),
                 Section("Section", "", ""),
-            ),
+            ).map { Nsfw.Safe(it) },
         ),
     )
 }

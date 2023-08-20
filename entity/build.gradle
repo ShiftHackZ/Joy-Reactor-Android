@@ -8,3 +8,7 @@ apply from: "$project.rootDir/gradle/common.gradle"
 android {
     namespace 'com.shifthackz.joyreactor.entity'
 }
+
+dependencies {
+    implementation di.koinCore
+}

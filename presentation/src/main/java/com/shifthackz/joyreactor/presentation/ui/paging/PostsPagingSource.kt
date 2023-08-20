@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.shifthackz.joyreactor.domain.usecase.post.FetchPostsPageUseCase
 import com.shifthackz.joyreactor.entity.JoyReactorLink
+import com.shifthackz.joyreactor.entity.Nsfw
 import com.shifthackz.joyreactor.entity.Post
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsUI
 
@@ -32,8 +33,8 @@ class PostsPagingSource(
         return fetchPostsPageUseCase(key).let { result ->
             result.fold(
                 onSuccess = { page ->
-                    Log.d("PAGING", "[$key] ${page.data.joinToString(", ") { "P(${it.id})" }}")
-                    Log.d("DBGN", "PPP [$key] prev = ${page.prev} ||| next = ${page.next}")
+//                    Log.d("PAGING", "[$key] ${page.data.joinToString(", ") { "P(${it.id})" }}")
+//                    Log.d("DBGN", "PPP [$key] prev = ${page.prev} ||| next = ${page.next}")
                     LoadResult.Page(
                         data = appendUnique(page.data),
                         prevKey = page.prev,
@@ -45,11 +46,17 @@ class PostsPagingSource(
         }
     }
 
-    private fun appendUnique(items: List<Post>): List<PostsUI> = items.map { post ->
-        if (uniqueKeys.contains(post.id)) PostsUI.NonUnique
-        else {
-            uniqueKeys.add(post.id)
-            PostsUI.Ok(post)
+    private fun appendUnique(items: List<Nsfw<Post>>): List<PostsUI> = items.map { nsfwPost ->
+        when (nsfwPost) {
+            Nsfw.Censored -> PostsUI.NonUnique
+            is Nsfw.Safe -> {
+                val post = nsfwPost.data
+                if (uniqueKeys.contains(post.id)) PostsUI.NonUnique
+                else {
+                    uniqueKeys.add(post.id)
+                    PostsUI.Ok(post)
+                }
+            }
         }
     }
 

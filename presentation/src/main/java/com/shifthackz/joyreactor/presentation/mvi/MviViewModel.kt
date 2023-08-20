@@ -2,6 +2,7 @@
 
 package com.shifthackz.joyreactor.presentation.mvi
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -33,7 +34,7 @@ abstract class MviViewModel<S : MviState, E : MviEffect> : ViewModel() {
 
     open fun setState(state: S) {
 //        if (BuildConfig.DEBUG) {
-//            Log.d(this::class.simpleName, "NEW STATE : $state")
+            Log.d(this::class.simpleName, "NEW STATE : $state")
 //        }
         mutableState.tryEmit(state)
     }

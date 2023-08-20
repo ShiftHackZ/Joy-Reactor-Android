@@ -3,6 +3,7 @@ package com.shifthackz.joyreactor.presentation.ui.screen.posts
 import com.shifthackz.joyreactor.entity.Post
 
 interface PostsActionsListener {
+    val openSettings: () -> Unit
     val openPosts: (String) -> Unit
     val openSlider: (Post) -> Unit
     val openComments: (String) -> Unit
@@ -11,6 +12,7 @@ interface PostsActionsListener {
 
     companion object {
         val empty = object : PostsActionsListener {
+            override val openSettings: () -> Unit = {}
             override val openPosts: (String) -> Unit = {}
             override val openSlider: (Post) -> Unit = {}
             override val openComments: (String) -> Unit = {}

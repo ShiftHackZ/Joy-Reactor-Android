@@ -34,6 +34,7 @@ import com.shifthackz.joyreactor.presentation.ui.screen.comments.CommentsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.home.homeNavGraph
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsActionsListener
 import com.shifthackz.joyreactor.presentation.ui.screen.posts.PostsScreen
+import com.shifthackz.joyreactor.presentation.ui.screen.settings.SettingsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.slider.ContentSliderScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.tags.TagsScreen
 import com.shifthackz.joyreactor.presentation.ui.screen.webview.WebViewScreen
@@ -58,6 +59,9 @@ class JoyReactorActivity : ComponentActivity() {
                     val sliderScreenState = remember { mutableStateOf<Post?>(null) }
                     val webViewSheetState = remember { mutableStateOf<String?>(null) }
                     val postsActionsListener = object : PostsActionsListener {
+                        override val openSettings: () -> Unit = {
+                            navController.navigate(Route.SETTINGS.value)
+                        }
                         override val openPosts: (String) -> Unit = { url ->
                             val route = if (url.endsWith("/rating")) Route.TAGS else Route.POSTS
                             navController.navigate(
@@ -149,6 +153,13 @@ class JoyReactorActivity : ComponentActivity() {
                                     ),
                                     navigateBack = navigateBack,
                                     postsActionsListener = postsActionsListener,
+                                ).Build()
+                            }
+
+                            composable(Route.SETTINGS.value) {
+                                SettingsScreen(
+                                    viewModel = koinViewModel(),
+                                    navigateBack = navigateBack,
                                 ).Build()
                             }
                         }
